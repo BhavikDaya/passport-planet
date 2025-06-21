@@ -37,7 +37,7 @@ let bodyData = [];
 
 async function loadCelestialDB () {
     
-        const response = await fetch('/celestialDB.json');
+        const response = await fetch('./celestialDB.json');
         bodyData = await response.json();
         init();
     
@@ -88,7 +88,7 @@ function init() {
     window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
     window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
     document.addEventListener('click' || 'mousemove', () => {
-        const backgroundMusic = new Audio('/sounds/background.mp3');
+        const backgroundMusic = new Audio('./sounds/background.mp3');
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.5;
         backgroundMusic.play();
@@ -440,7 +440,7 @@ function createCelestialBody(data, parentGroup = scene) {
     if (data.corona) {
         const corona = new THREE.Sprite(
             new THREE.SpriteMaterial({
-                map: new THREE.TextureLoader().load('/images/corona.png'),
+                map: new THREE.TextureLoader().load('./images/corona.png'),
                 color: 0xFFCC66,
                 opacity: 0.6,
                 transparent: true,
@@ -679,7 +679,7 @@ function createShip() {
     const loader = new OBJLoader();
 
     loader.load(
-        '/images/spaceship.obj', 
+        './images/spaceship.obj', 
         function (obj) {
 
             const loadedRocketModel = obj;
