@@ -197,10 +197,10 @@ function updateShipMovement (change) {
     if (keys['r']) ship.rotation.x += 0.02;
     if (keys['f']) ship.rotation.x -= 0.02; 
     if (keys['arrowleft']) {
-        ship.rotation.y += 0.04;
+        ship.rotation.y += 0.4;
     }
     if (keys['arrowright']) {
-        ship.rotation.y -= 0.004;
+        ship.rotation.y -= 0.4;
     }
 
     shipDirection.normalize();
