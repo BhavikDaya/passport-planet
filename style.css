@@ -1,0 +1,174 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+}
+
+#solarCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#infoPane {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 2s ease-in;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(20, 20, 20, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 250px;
+    font-family: sans-serif;
+    z-index: 10;
+    pointer-events: none;
+    overflow-wrap: break-word;
+}
+
+#X {
+    opacity: 5;
+    transition: opacity 4s ease;
+    position: absolute;
+    top: 1px;
+    right: 10px;
+    background: rgba(20, 20, 20, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 250px;
+    font-family: sans-serif;
+    z-index: 10;
+    pointer-events: auto;
+    cursor: pointer;
+    overflow-wrap: break-word;
+}
+
+#infoPane.visible {
+    opacity: 0.9;
+    visibility: visible;
+}
+
+#playPause {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 10;
+}
+
+#trailToggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 10;
+}
+
+#speedSlider {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    transition: 0.2s;
+}
+
+#speedDisplay {
+    position: fixed;
+    bottom: 30px;
+    left: 170px;
+    color: white;
+}
+
+#cockpitButton {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 10;
+}
+
+#sidebar {
+    position: fixed;
+    top: 0px;
+    left: 5px;
+    width: 115px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: sans-serif;
+    font-size: 14px;
+    z-index: 10;
+    opacity: 0.6;
+    visibility: hidden;
+    overflow: auto;
+}
+
+#sidebarTitle {
+    cursor: pointer;
+    visibility: visible;
+    font-size: 14px;
+}
+
+#sidebarList {
+    list-style: none;
+    
+    padding: 0;
+    margin: 0;
+    width: 0;
+    height: 100vh;
+    opacity: 0;
+    max-height: 100;
+    transition: height 0.4s ease-out, opacity 0.4s ease-out;
+    overflow: auto;
+}
+
+#sidebar.collapsed #sidebarList{
+    width: 100px;
+    opacity: 0.6;
+    pointer-events: auto;
+    visibility: visible;
+    left: 50px;
+}
+
+#cockpitControls {
+    position: fixed;
+    bottom: 70px;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    
+}
+
+#cockpitControls.visible {
+    opacity: 1;
+}

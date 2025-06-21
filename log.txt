@@ -1,0 +1,8 @@
+Fix camera max zoom out
+Change cockpit to free roam and change the button location to top right corner
+Welcome screen
+- Black screen with explore the solar system text
+- clean format the code
+- host on a website
+- get references
+- change name from passport planet to something else

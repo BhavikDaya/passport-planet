@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond the Blue Marble</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="solarCanvas"></canvas>
+    <div id = "sidebar">
+        <h3 style = "text-align: center;" id = "sidebarTitle" >Click to Explore</h3>
+        <ul id = "sidebarList"></ul>
+    </div>
+    <div id = "infoPane" style = "display: none;">
+        <h3 id = "infoTitle">Planet Name</h3>
+        <p id = "X">X</p>
+        <p id = "status">Status</p>
+        <p id = "infoSize">Diameter:</p>
+        <p id = "infoDistance">Distance</p>
+        <p id = "infoMoonDistance">Distance from planet</p>
+        <p id = "orbit">Orbit</p>
+        <p id = "day">Day</p>
+        <p id = "temp">Temperature</p>
+        <p id = "atmosComp">Atmosphere</p>
+        <p id = "moonNum">Moons</p>
+        <p id = "funFact">Fact</p>
+    </div>
+        <button id = "playPause">Pause</button>
+        <button id = "trailToggle">Trails Off</button>
+        <p id = "speedDisplay">1x</p>
+        
+        <input type = "range" id = "speedSlider" min = "-2" max = "2" step = "0.001" value = "0" style = "width: 300px;">
+        <button id = "cockpitButton">Enter cockpit</button>
+        <p id = "cockpitControls">W - forwards, S - backwards, A - strafe left, D - strafe right, Q - roll left, E - roll right, Up arrow - up, Down arrow - down, Left arrow - turn left, Right arrow - turn right</p>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
