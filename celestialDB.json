@@ -2,7 +2,7 @@
   {
     "name": "sun",
     "size": 5,
-    "texture": "/images/sun.jpg",
+    "texture": "./images/sun.jpg",
     "rotationSpeed": 0.002,
     "light": true,
     "corona": true,
@@ -19,7 +19,7 @@
   {
     "name": "mercury",
     "size": 0.176,
-    "texture": "/images/mercury.jpg",
+    "texture": "./images/mercury.jpg",
     "distance": 10,
     "rotationSpeed": 0.002,
     "orbitSpeed": 0.02,
@@ -40,7 +40,7 @@
   {
     "name": "venus",
     "size": 0.44,
-    "texture": "/images/venus.jpg",
+    "texture": "./images/venus.jpg",
     "distance": 15,
     "rotationSpeed": -0.0005,
     "orbitSpeed": 0.012,
@@ -48,7 +48,7 @@
     "orbitalTilt": 0.059,
     "axialTilt": 2.64,
     "precessionSpeed": 0.00005,
-    "atmosphere": "/images/earthatmosphere.png",
+    "atmosphere": "./images/earthatmosphere.png",
     "status": "Planet",
     "diameter": 12104,
     "distanceFromSun": 108.2,
@@ -62,7 +62,7 @@
   {
     "name": "earth",
     "size": 0.46,
-    "texture": "/images/earth.jpg",
+    "texture": "./images/earth.jpg",
     "distance": 20,
     "rotationSpeed": 0.05,
     "orbitSpeed": 0.01,
@@ -70,7 +70,7 @@
     "orbitalTilt": 0.00005,
     "axialTilt": 0.409,
     "precessionSpeed": 0.1,
-    "atmosphere": "/images/earthatmosphere.png",
+    "atmosphere": "./images/earthatmosphere.png",
     "status": "Planet",
     "diameter": 12756,
     "distanceFromSun": 151,
@@ -88,7 +88,7 @@
         "orbitSpeed": 0.02,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/moon.jpg",
+        "texture": "./images/moon.jpg",
         "status": "Moon",
         "diameter": 3474.8,
         "distanceFromPlanet": 0.384,
@@ -107,7 +107,7 @@
         "rotationSpeed": 0.01,
         "trail": false,
         "isSpaceMissionObject": true,
-        "texture": "/images/rocket.obj",
+        "texture": "./images/rocket.obj",
         "orbitOffset": { "x": 0, "y": 0, "z": 0}
       }
     ]
@@ -115,7 +115,7 @@
   {
     "name": "mars",
     "size": 0.25,
-    "texture": "/images/mars.jpg",
+    "texture": "./images/mars.jpg",
     "distance": 29,
     "rotationSpeed": 0.048,
     "orbitSpeed": 0.005,
@@ -140,7 +140,7 @@
         "orbitSpeed": 0.04,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/phobos.jpg",
+        "texture": "./images/phobos.jpg",
         "status": "Moon",
         "diameter": 22.4,
         "distanceFromPlanet": 0.006,
@@ -158,7 +158,7 @@
         "orbitSpeed": 0.025,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 12.4,
         "distanceFromPlanet": 0.023,
@@ -174,7 +174,7 @@
   {
     "name": "ceres",
     "size": 0.08,
-    "texture": "/images/ceres.jpg",
+    "texture": "./images/ceres.jpg",
     "distance": 38,
     "rotationSpeed": 0.003,
     "orbitSpeed": 0.004,
@@ -195,7 +195,7 @@
   {
     "name": "jupiter",
     "size": 1,
-    "texture": "/images/jupiter.jpg",
+    "texture": "./images/jupiter.jpg",
     "distance": 60,
     "rotationSpeed": 0.01,
     "orbitSpeed": 0.0013,
@@ -215,7 +215,7 @@
     "rings":{
         "innerRadius": 1.4,
         "outerRadius": 1.42,
-        "texture": "/images/jupiterrings.png",
+        "texture": "./images/jupiterrings.png",
         "tilt": 0.05,
         "opacity": 0.6
     },
@@ -227,7 +227,7 @@
         "orbitSpeed": 0.015,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/ganymede.jpg",
+        "texture": "./images/ganymede.jpg",
         "status": "Moon",
         "diameter": 5268,
         "distanceFromPlanet": 1.07,
@@ -245,7 +245,7 @@
         "orbitSpeed": 0.012,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/callisto.jpg",
+        "texture": "./images/callisto.jpg",
         "status": "Moon",
         "diameter": 4821,
         "distanceFromPlanet": 1.88,
@@ -263,7 +263,7 @@
         "orbitSpeed": 0.018,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/io.jpg",
+        "texture": "./images/io.jpg",
         "status": "Moon",
         "diameter": 3643,
         "distanceFromPlanet": 0.422,
@@ -281,7 +281,7 @@
         "orbitSpeed": 0.0175,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/europa.jpg",
+        "texture": "./images/europa.jpg",
         "status": "Moon",
         "diameter": 3122,
         "distanceFromPlanet": 0.417,
@@ -297,7 +297,7 @@
   {
     "name": "saturn",
     "size": 0.8,
-    "texture": "/images/saturn.jpg",
+    "texture": "./images/saturn.jpg",
     "distance": 120,
     "rotationSpeed": 0.009,
     "orbitSpeed": 0.0009,
@@ -317,7 +317,7 @@
     "rings": {
       "innerRadius": 1.1,
       "outerRadius": 2.1,
-      "texture": "/images/saturnrings.png",
+      "texture": "./images/saturnrings.png",
       "tilt": 0.0
     },
     "moons": [
@@ -328,8 +328,8 @@
         "orbitSpeed": 0.01,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/titan.jpg",
-        "atmosphere": "/images/titanatmosphere.png",
+        "texture": "./images/titan.jpg",
+        "atmosphere": "./images/titanatmosphere.png",
         "status": "Moon",
         "diameter": 5150,
         "distanceFromPlanet": 1.2,
@@ -347,7 +347,7 @@
         "orbitSpeed": 0.01,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 396,
         "distanceFromPlanet": 0.047,
@@ -365,8 +365,8 @@
         "orbitSpeed": 0.009,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/europa.jpg",
-        "atmosphere": "/images/titanatmosphere.png",
+        "texture": "./images/europa.jpg",
+        "atmosphere": "./images/titanatmosphere.png",
         "status": "Moon",
         "diameter": 504,
         "distanceFromPlanet": 0.058,
@@ -382,7 +382,7 @@
   {
     "name": "uranus",
     "size": 0.6,
-    "texture": "/images/uranus.jpg",
+    "texture": "./images/uranus.jpg",
     "distance": 300,
     "rotationSpeed": 0.005,
     "orbitSpeed": 0.0004,
@@ -402,7 +402,7 @@
     "rings":{
         "innerRadius": 1.2,
         "outerRadius": 2.0,
-        "texture": "/images/uranusrings.png",
+        "texture": "./images/uranusrings.png",
         "tilt": 0.0
     },
     "moons": [
@@ -413,7 +413,7 @@
         "orbitSpeed": 0.008,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/titania.jpg",
+        "texture": "./images/titania.jpg",
         "status": "Moon",
         "diameter": 1578,
         "distanceFromPlanet": 0.435,
@@ -429,7 +429,7 @@
   {
     "name": "neptune",
     "size": 0.5,
-    "texture": "/images/neptune.jpg",
+    "texture": "./images/neptune.jpg",
     "distance": 472,
     "rotationSpeed": 0.004,
     "orbitSpeed": 0.0002,
@@ -449,7 +449,7 @@
     "rings":{
         "innerRadius": 1.2,
         "outerRadius": 2.0,
-        "texture": "/images/neptunerings.png",
+        "texture": "./images/neptunerings.png",
         "tilt": 0.49
     },
     "moons": [
@@ -460,7 +460,7 @@
         "orbitSpeed": 0.007,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/triton.jpg",
+        "texture": "./images/triton.jpg",
         "status": "Moon",
         "diameter": 2706,
         "distanceFromPlanet": 0.354,
@@ -476,7 +476,7 @@
   {
     "name": "pluto",
     "size": 0.1,
-    "texture": "/images/pluto.jpg",
+    "texture": "./images/pluto.jpg",
     "distance": 725,
     "rotationSpeed": 0.003,
     "orbitSpeed": 0.0001,
@@ -501,7 +501,7 @@
         "orbitSpeed": 0.005,
         "rotationSpeed": 0.005,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 1212,
         "distanceFromPlanet": 0.0196,
@@ -519,7 +519,7 @@
         "orbitSpeed": 0.008,
         "rotationSpeed": 0.002,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 49.8,
         "distanceFromPlanet": 0.048,
@@ -537,7 +537,7 @@
         "orbitSpeed": 0.007,
         "rotationSpeed": 0.002,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 43,
         "distanceFromPlanet": 0.064,
@@ -555,7 +555,7 @@
         "orbitSpeed": 0.0075,
         "rotationSpeed": 0.0015,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 19,
         "distanceFromPlanet": 0.058,
@@ -573,7 +573,7 @@
         "orbitSpeed": 0.0085,
         "rotationSpeed": 0.0015,
         "trail": false,
-        "texture": "/images/styx.jpg",
+        "texture": "./images/styx.jpg",
         "status": "Moon",
         "diameter": 16,
         "distanceFromPlanet": 0.042,
@@ -589,7 +589,7 @@
   {
   "name": "orcus",
   "size": 0.045,
-  "texture": "/images/deimos.jpg",
+  "texture": "./images/deimos.jpg",
   "distance": 725,  
   "rotationSpeed": 0.003,
   "orbitSpeed": 0.0001,
@@ -610,7 +610,7 @@
   {
   "name": "haumea",
   "size": 0.07,
-  "texture": "/images/deimos.jpg",
+  "texture": "./images/deimos.jpg",
   "distance": 798,  
   "rotationSpeed": 0.015,
   "orbitSpeed": 0.0001,
@@ -630,7 +630,7 @@
   "rings": {
     "innerRadius": 1.15,
     "outerRadius": 1.18,
-    "texture": "/images/deimos.jpg",
+    "texture": "./images/deimos.jpg",
     "tilt": 0,
     "opacity": 0.4
   },
@@ -641,7 +641,7 @@
         "orbitSpeed": 0.006,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "/images/deimos.jpg",
+        "texture": "./images/deimos.jpg",
         "status": "Moon",
         "diameter": 310,
         "distanceFromPlanet": 0.0495,
@@ -656,7 +656,7 @@
   {
     "name": "eris",
     "size": 0.09,
-    "texture": "/images/eris.jpg",
+    "texture": "./images/eris.jpg",
     "distance": 1229,
     "rotationSpeed": 0.002,
     "orbitSpeed": 0.00008,
@@ -677,7 +677,7 @@
   {
   "name": "sedna",
   "size": 0.08,
-  "texture": "/images/sedna.jpg",
+  "texture": "./images/sedna.jpg",
   "distance": 1600,  
   "rotationSpeed": 0.001,
   "orbitSpeed": 0.00001,
@@ -698,7 +698,7 @@
 {
   "name": "gonggong",
   "size": 0.06,
-  "texture": "/images/mars.jpg",
+  "texture": "./images/mars.jpg",
   "distance": 1622,  
   "rotationSpeed": 0.001,
   "orbitSpeed": 0.00006,
@@ -719,7 +719,7 @@
 {
   "name": "FarFarOut",
   "size": 0.02,
-  "texture": "/images/deimos.jpg",
+  "texture": "./images/deimos.jpg",
   "distance": 2421,  
   "rotationSpeed": 0.001,
   "orbitSpeed": 0.000005,
@@ -745,7 +745,7 @@
   "rotationSpeed": 0.01,
   "trail": true,
   "isSpaceMissionObject": true,
-  "texture": "/images/comet.obj",
+  "texture": "./images/comet.obj",
   "orbitOffset": { "x": 885, "y": 3, "z": 0}
 }
 ]
