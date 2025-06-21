@@ -19,7 +19,7 @@
   {
     "name": "mercury",
     "size": 0.176,
-    "texture": "./images/mercury.jpg",
+    "texture": "/images/mercury.jpg",
     "distance": 10,
     "rotationSpeed": 0.002,
     "orbitSpeed": 0.02,
@@ -40,7 +40,7 @@
   {
     "name": "venus",
     "size": 0.44,
-    "texture": "./images/venus.jpg",
+    "texture": "images/venus.jpg",
     "distance": 15,
     "rotationSpeed": -0.0005,
     "orbitSpeed": 0.012,
@@ -62,7 +62,7 @@
   {
     "name": "earth",
     "size": 0.46,
-    "texture": "./images/earth.jpg",
+    "texture": "./earth.jpg",
     "distance": 20,
     "rotationSpeed": 0.05,
     "orbitSpeed": 0.01,
@@ -88,7 +88,7 @@
         "orbitSpeed": 0.02,
         "rotationSpeed": 0.01,
         "trail": false,
-        "texture": "./images/moon.jpg",
+        "texture": "/moon.jpg",
         "status": "Moon",
         "diameter": 3474.8,
         "distanceFromPlanet": 0.384,
