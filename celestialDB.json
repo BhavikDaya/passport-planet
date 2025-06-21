@@ -2,7 +2,7 @@
   {
     "name": "sun",
     "size": 5,
-    "texture": "images./sun.jpg",
+    "texture": "images/sun.jpg",
     "rotationSpeed": 0.002,
     "light": true,
     "corona": true,
