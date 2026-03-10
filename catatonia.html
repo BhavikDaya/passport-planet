@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bush-Francis Catatonia Rating Scale</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
+            color: white;
+            padding: 20px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* Patient Info */
+        .patient-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #2d6a9f;
+        }
+
+        .patient-card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 14px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .patient-grid { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .field-group input {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            color: #1a202c;
+            transition: border-color 0.15s;
+        }
+
+        .field-group input:focus {
+            outline: none;
+            border-color: #2d6a9f;
+            box-shadow: 0 0 0 3px rgba(45,106,159,0.12);
+        }
+
+        /* Score summary bar */
+        .score-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .score-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-box .score-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #1e3a5f;
+        }
+
+        .score-box .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .screen-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .screen-negative { background: #c6f6d5; color: #22543d; }
+        .screen-positive { background: #fed7d7; color: #742a2a; }
+        .severity-mild { background: #fefcbf; color: #744210; }
+        .severity-moderate { background: #fbd38d; color: #744210; }
+        .severity-severe { background: #fed7d7; color: #742a2a; }
+
+        .severity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        /* Instructions banner */
+        .instructions {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #2c5282;
+            line-height: 1.5;
+        }
+
+        .instructions strong { font-weight: 700; }
+
+        /* Section header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 12px;
+        }
+
+        .section-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4a5568;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            color: #718096;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Item cards */
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid #e8edf2;
+            overflow: hidden;
+            transition: box-shadow 0.15s;
+        }
+
+        .item-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-card.scored {
+            border-left: 4px solid #2d6a9f;
+        }
+
+        .item-card.scored-high {
+            border-left: 4px solid #e53e3e;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .item-num {
+            min-width: 28px;
+            height: 28px;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .item-card.scored .item-num {
+            background: #2d6a9f;
+            color: white;
+        }
+
+        .item-card.scored-high .item-num {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .item-title-block {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .item-subtitle {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .item-score-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #a0aec0;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-card.scored .item-score-display { color: #2d6a9f; }
+        .item-card.scored-high .item-score-display { color: #e53e3e; }
+
+        .item-body {
+            padding: 0 16px 16px 56px;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 8px 10px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        /* Score options */
+        .score-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        @media (max-width: 500px) {
+            .score-options { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .score-btn {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            transition: all 0.12s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .score-btn:hover {
+            border-color: #2d6a9f;
+            background: #ebf8ff;
+        }
+
+        .score-btn.selected {
+            border-color: #2d6a9f;
+            background: #2d6a9f;
+            color: white;
+        }
+
+        .score-btn.selected-high {
+            border-color: #e53e3e;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .score-btn .btn-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-btn .btn-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            opacity: 0.85;
+        }
+
+        .score-btn .btn-desc {
+            font-size: 0.67rem;
+            color: #718096;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .score-btn.selected .btn-desc,
+        .score-btn.selected-high .btn-desc { color: rgba(255,255,255,0.8); }
+
+        /* Results section */
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .result-block h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .result-block .big-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #1e3a5f;
+            line-height: 1;
+        }
+
+        .result-block .sub-text {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .interpretation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .interp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .interp-row:last-child { border-bottom: none; }
+
+        .interp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-green { background: #48bb78; }
+        .dot-red { background: #e53e3e; }
+        .dot-yellow { background: #ed8936; }
+
+        .item-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #4a5568;
+        }
+
+        .summary-row .s-name { flex: 1; }
+        .summary-row .s-score {
+            font-weight: 700;
+            color: #1e3a5f;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #2d6a9f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover { background: #1e3a5f; }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover { border-color: #2d6a9f; color: #2d6a9f; }
+
+        .btn-danger {
+            background: white;
+            color: #e53e3e;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+
+        /* Progress bar */
+        .progress-bar-wrap {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2d6a9f, #48bb78);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .score-bar { position: static; box-shadow: none; }
+            .action-row { display: none; }
+            header { background: #1e3a5f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .item-card { break-inside: avoid; }
+        }
+
+        /* Toggle chevron */
+        .chevron {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .item-card.open .chevron { transform: rotate(180deg); }
+
+        .item-body { display: none; }
+        .item-card.open .item-body { display: block; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bush-Francis Catatonia Rating Scale (BFCRS)</h1>
+    <p>23-item clinician-administered scale &bull; Screening: items 1–14 &bull; Max score: 69</p>
+</header>
+
+<div class="container">
+
+    <!-- Patient Info -->
+    <div class="patient-card">
+        <h2>Patient Information</h2>
+        <div class="patient-grid">
+            <div class="field-group">
+                <label for="patientName">Patient Name / ID</label>
+                <input type="text" id="patientName" placeholder="Name or identifier">
+            </div>
+            <div class="field-group">
+                <label for="patientDOB">Date of Birth</label>
+                <input type="date" id="patientDOB">
+            </div>
+            <div class="field-group">
+                <label for="assessDate">Assessment Date</label>
+                <input type="date" id="assessDate">
+            </div>
+            <div class="field-group">
+                <label for="clinician">Clinician</label>
+                <input type="text" id="clinician" placeholder="Name / designation">
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky score bar -->
+    <div class="score-bar">
+        <div class="score-group">
+            <div class="score-box">
+                <div class="score-num" id="totalScore">0</div>
+                <div class="score-label">Total Score / 69</div>
+            </div>
+            <div class="score-box">
+                <div class="score-num" id="screenScore">0</div>
+                <div class="score-label">Screening / 42</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span class="screen-badge screen-negative" id="screenBadge">Screen: Negative</span>
+            <span class="severity-badge severity-mild" id="severityBadge">Absent</span>
+        </div>
+        <div style="flex:1;min-width:120px;">
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 23 rated</div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <strong>Instructions:</strong> Rate each item based on observed behavior during the interview and information from nursing staff over the past 24 hours. Tap an item to expand it and select a score.
+        <strong>Screening:</strong> If the patient scores &ge;1 on 2 or more of items 1–14, catatonia is likely and should be assessed further and managed accordingly.
+    </div>
+
+    <!-- Items will be rendered here by JS -->
+    <div id="itemsContainer"></div>
+
+    <!-- Results -->
+    <div class="results-card" id="resultsCard">
+        <h2>Assessment Summary</h2>
+        <div class="results-grid">
+            <div class="result-block">
+                <h3>Total BFCRS Score</h3>
+                <div class="big-num" id="r_total">0</div>
+                <div class="sub-text">out of 69 maximum</div>
+            </div>
+            <div class="result-block">
+                <h3>Screening Score (Items 1–14)</h3>
+                <div class="big-num" id="r_screen">0</div>
+                <div class="sub-text">out of 42 maximum</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box">
+            <h3>Interpretation</h3>
+            <div class="interp-row">
+                <div class="interp-dot" id="dot_screen"></div>
+                <div id="text_screen">Screening result will appear here</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot" id="dot_severity"></div>
+                <div id="text_severity">Severity classification will appear here</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>This scale is a clinical aid only. Diagnosis and management require full clinical assessment.</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Item Scores</h3>
+            <div class="item-summary" id="itemSummary"></div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn-secondary" onclick="copyResults()">Copy Summary</button>
+            <button class="btn-danger" onclick="resetAll()">Reset All</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const ITEMS = [
+    {
+        num: 1,
+        name: "Excitement",
+        subtitle: "Extreme hyperactivity",
+        desc: "Extreme hyperactivity, constant motor unrest which is apparently non-purposeful. Not to be attributed to akathisia or goal-directed agitation.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional, non-purposeful movement" },
+            { score: 2, label: "Moderate", desc: "Frequent non-purposeful motor activity" },
+            { score: 3, label: "Severe", desc: "Constant, patient cannot be redirected" }
+        ],
+        screening: true
+    },
+    {
+        num: 2,
+        name: "Immobility / Stupor",
+        subtitle: "Extreme hypoactivity",
+        desc: "Extreme hypoactivity, immobile, minimally responsive to stimuli.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional slowing, less animated" },
+            { score: 2, label: "Moderate", desc: "Sits still for long periods without moving" },
+            { score: 3, label: "Severe", desc: "Immobile, minimally responsive to stimuli" }
+        ],
+        screening: true
+    },
+    {
+        num: 3,
+        name: "Mutism",
+        subtitle: "Verbally unresponsive",
+        desc: "Verbally unresponsive or minimally responsive.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasionally mute, responds to prompting" },
+            { score: 2, label: "Moderate", desc: "Mostly mute, rare or single-word responses" },
+            { score: 3, label: "Severe", desc: "Completely mute, no verbal output" }
+        ],
+        screening: true
+    },
+    {
+        num: 4,
+        name: "Staring",
+        subtitle: "Fixed gaze, decreased blinking",
+        desc: "Fixed gaze, little or no visual scanning of environment, decreased blinking.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Poor eye contact, gaze held briefly" },
+            { score: 2, label: "Moderate", desc: "Sporadic scanning, may startle to stimuli" },
+            { score: 3, label: "Severe", desc: "Eyes fixed forward, rarely blinks" }
+        ],
+        screening: true
+    },
+    {
+        num: 5,
+        name: "Posturing / Catalepsy",
+        subtitle: "Spontaneous maintenance of posture",
+        desc: "Spontaneous maintenance of a posture, including mundane positions (e.g., sitting or standing for long periods without moving). Includes catalepsy (waxy maintenance of externally imposed posture).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "< 1 minute" },
+            { score: 2, label: "Moderate", desc: "1–10 minutes" },
+            { score: 3, label: "Severe", desc: "> 10 minutes" }
+        ],
+        screening: true
+    },
+    {
+        num: 6,
+        name: "Grimacing",
+        subtitle: "Maintenance of odd facial expressions",
+        desc: "Maintenance of odd facial expressions.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "< 10 seconds" },
+            { score: 2, label: "Moderate", desc: "< 1 minute" },
+            { score: 3, label: "Severe", desc: "≥ 1 minute" }
+        ],
+        screening: true
+    },
+    {
+        num: 7,
+        name: "Echopraxia / Echolalia",
+        subtitle: "Mimicking movements or speech",
+        desc: "Mimicking of examiner's movements (echopraxia) and/or speech (echolalia).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional mirroring" },
+            { score: 2, label: "Moderate", desc: "Frequent mirroring" },
+            { score: 3, label: "Severe", desc: "Almost constant" }
+        ],
+        screening: true
+    },
+    {
+        num: 8,
+        name: "Stereotypy",
+        subtitle: "Repetitive, non-goal-directed motor activity",
+        desc: "Repetitive, non-goal-directed motor activity (e.g., finger-play, repeatedly touching, patting, or rubbing self). Do not include verbigeration.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant" }
+        ],
+        screening: true
+    },
+    {
+        num: 9,
+        name: "Mannerisms",
+        subtitle: "Odd, purposeful movements",
+        desc: "Odd, purposeful movements (e.g., walking on tiptoe, saluting passersby, exaggerated caricatures of mundane movements).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant" }
+        ],
+        screening: true
+    },
+    {
+        num: 10,
+        name: "Verbigeration",
+        subtitle: "Repetition of phrases/sentences",
+        desc: "Repetition of phrases or sentences (like a scratched record). Do not score simple perseveration here.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant, difficult to interrupt" }
+        ],
+        screening: true
+    },
+    {
+        num: 11,
+        name: "Rigidity",
+        subtitle: "Rigid position despite passive movement",
+        desc: "Maintenance of a rigid position despite efforts to be moved. Exclude if due to a known organic cause (e.g., Parkinson's disease, NMS).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Slight resistance" },
+            { score: 2, label: "Moderate", desc: "Frank rigidity" },
+            { score: 3, label: "Severe", desc: "Extreme rigidity, pipe-lead or cogwheel" }
+        ],
+        screening: true
+    },
+    {
+        num: 12,
+        name: "Negativism",
+        subtitle: "Resistance to instructions or movement",
+        desc: "Apparently motiveless resistance to instructions or attempts to move/examine patient. Contrary behavior — does opposite of instructions.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional resistance" },
+            { score: 2, label: "Moderate", desc: "Frequent resistance" },
+            { score: 3, label: "Severe", desc: "Constant, does opposite of all instructions" }
+        ],
+        screening: true
+    },
+    {
+        num: 13,
+        name: "Waxy Flexibility",
+        subtitle: "Initial resistance then passive repositioning",
+        desc: "During examination of tone, patient offers initial resistance before allowing repositioning, similar to bending a warm candle (lead-pipe then gives way).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant, present in all limbs" }
+        ],
+        screening: true
+    },
+    {
+        num: 14,
+        name: "Withdrawal",
+        subtitle: "Refusal to eat, drink, or make eye contact",
+        desc: "Refusal to eat, drink, and/or make eye contact.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Minimal P.O. intake / minimal interaction" },
+            { score: 2, label: "Moderate", desc: "Limited P.O. intake / limited interaction" },
+            { score: 3, label: "Severe", desc: "No P.O. intake / no interaction for ≥ 1 day" }
+        ],
+        screening: true
+    },
+    {
+        num: 15,
+        name: "Impulsivity",
+        subtitle: "Sudden inappropriate behavior without provocation",
+        desc: "Patient suddenly engages in inappropriate behavior (e.g., runs into street, screams, takes off clothes) without provocation. Afterward can give no or only a vague explanation.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional episode" },
+            { score: 2, label: "Moderate", desc: "Frequent episodes" },
+            { score: 3, label: "Severe", desc: "Constant, repeated episodes" }
+        ],
+        screening: false
+    },
+    {
+        num: 16,
+        name: "Automatic Obedience",
+        subtitle: "Exaggerated compliance with examiner's requests",
+        desc: "Exaggerated cooperation with examiner's requests, or repeated movements requested only once (e.g., told to stick out tongue once and patient does it 10 times).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional exaggerated compliance" },
+            { score: 2, label: "Moderate", desc: "Frequent exaggerated compliance" },
+            { score: 3, label: "Severe", desc: "Constant automatic compliance" }
+        ],
+        screening: false
+    },
+    {
+        num: 17,
+        name: "Mitgehen",
+        subtitle: '"Anglepoise lamp" arm raising',
+        desc: '"Anglepoise Lamp" sign: arm raising in response to light upward pressure, despite instructions to resist. Limb moves with examiner like an anglepoise lamp.',
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional, one arm" },
+            { score: 2, label: "Moderate", desc: "Frequent or both arms" },
+            { score: 3, label: "Severe", desc: "Constant, cannot resist" }
+        ],
+        screening: false
+    },
+    {
+        num: 18,
+        name: "Gegenhalten",
+        subtitle: "Resistance proportional to passive movement force",
+        desc: "Resistance to passive movement proportional to strength of the stimulus; patient appears to \"hold against\" passive movement. Resistance increases as examiner increases force.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Present in all limbs, constant" }
+        ],
+        screening: false
+    },
+    {
+        num: 19,
+        name: "Ambitendency",
+        subtitle: "Stuck in indecisive movements",
+        desc: "Patient appears \"stuck\" in indecisive, hesitant movements (e.g., extends hand for handshake then withdraws before contact, then extends again repeatedly).",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant, cannot complete motor acts" }
+        ],
+        screening: false
+    },
+    {
+        num: 20,
+        name: "Grasp Reflex",
+        subtitle: "Primitive grasp reflex on examination",
+        desc: "Presence of grasp reflex on neurological examination. Stroke palm — patient involuntarily grasps.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Present, one hand" },
+            { score: 2, label: "Moderate", desc: "Present, both hands" },
+            { score: 3, label: "Severe", desc: "Constant, cannot release" }
+        ],
+        screening: false
+    },
+    {
+        num: 21,
+        name: "Perseveration",
+        subtitle: "Persistent return to same topic or movement",
+        desc: "Repeatedly returns to same topic or persists with movements after the task is complete.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant, derails assessment" }
+        ],
+        screening: false
+    },
+    {
+        num: 22,
+        name: "Combativeness",
+        subtitle: "Undirected combative behavior",
+        desc: "Combative behavior, usually undirected and without adequate explanation.",
+        options: [
+            { score: 0, label: "Absent", desc: "Not present" },
+            { score: 1, label: "Mild", desc: "Occasional" },
+            { score: 2, label: "Moderate", desc: "Frequent" },
+            { score: 3, label: "Severe", desc: "Constant, endangers safety" }
+        ],
+        screening: false
+    },
+    {
+        num: 23,
+        name: "Autonomic Abnormality",
+        subtitle: "Temperature, BP, pulse, or RR abnormality",
+        desc: "Temperature, blood pressure, pulse, or respiratory rate abnormality. Exclude known medical causes such as infection.",
+        options: [
+            { score: 0, label: "Absent", desc: "No abnormality" },
+            { score: 1, label: "Mild", desc: "One abnormal vital sign" },
+            { score: 2, label: "Moderate", desc: "Two abnormal vital signs" },
+            { score: 3, label: "Severe", desc: "Three or more, or severe single abnormality (e.g., temp > 38.5°C)" }
+        ],
+        screening: false
+    }
+];
+
+// State
+const scores = new Array(23).fill(null);
+
+// Set today's date as default for assessment date
+document.getElementById('assessDate').valueAsDate = new Date();
+
+function buildItems() {
+    const container = document.getElementById('itemsContainer');
+
+    // Screening section header
+    const screenHeader = document.createElement('div');
+    screenHeader.className = 'section-header';
+    screenHeader.innerHTML = `
+        <h2>Screening Items (1–14)</h2>
+        <div class="section-line"></div>
+        <span class="section-tag">Positive if ≥2 items score ≥1</span>`;
+    container.appendChild(screenHeader);
+
+    ITEMS.forEach((item, idx) => {
+        // Full scale header before item 15
+        if (idx === 14) {
+            const fullHeader = document.createElement('div');
+            fullHeader.className = 'section-header';
+            fullHeader.innerHTML = `
+                <h2>Extended Items (15–23)</h2>
+                <div class="section-line"></div>
+                <span class="section-tag">Full scale only</span>`;
+            container.appendChild(fullHeader);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `item-card-${idx}`;
+
+        card.innerHTML = `
+            <div class="item-header" onclick="toggleCard(${idx})">
+                <div class="item-num">${item.num}</div>
+                <div class="item-title-block">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-subtitle">${item.subtitle}</div>
+                </div>
+                <div class="item-score-display" id="score-display-${idx}">—</div>
+                <div class="chevron">▼</div>
+            </div>
+            <div class="item-body">
+                <div class="item-desc">${item.desc}</div>
+                <div class="score-options">
+                    ${item.options.map(opt => `
+                        <button class="score-btn" id="btn-${idx}-${opt.score}" onclick="setScore(${idx}, ${opt.score})">
+                            <span class="btn-num">${opt.score}</span>
+                            <span class="btn-label">${opt.label}</span>
+                            <span class="btn-desc">${opt.desc}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>`;
+
+        container.appendChild(card);
+    });
+}
+
+function toggleCard(idx) {
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.toggle('open');
+}
+
+function setScore(idx, value) {
+    scores[idx] = value;
+
+    // Update button styles
+    const item = ITEMS[idx];
+    item.options.forEach(opt => {
+        const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+        btn.classList.remove('selected', 'selected-high');
+        if (opt.score === value) {
+            btn.classList.add(value >= 2 ? 'selected-high' : 'selected');
+        }
+    });
+
+    // Update card state
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.remove('scored', 'scored-high');
+    if (value > 0) {
+        card.classList.add(value >= 2 ? 'scored-high' : 'scored');
+    }
+
+    // Update score display
+    const disp = document.getElementById(`score-display-${idx}`);
+    disp.textContent = value;
+
+    updateTotals();
+}
+
+function updateTotals() {
+    const rated = scores.filter(s => s !== null).length;
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+    const screenTotal = scores.slice(0, 14).reduce((a, s) => a + (s ?? 0), 0);
+    const screenPositiveCount = scores.slice(0, 14).filter(s => s !== null && s >= 1).length;
+    const screenPositive = screenPositiveCount >= 2;
+
+    // Header bar
+    document.getElementById('totalScore').textContent = total;
+    document.getElementById('screenScore').textContent = screenTotal;
+
+    const screenBadge = document.getElementById('screenBadge');
+    screenBadge.className = 'screen-badge ' + (screenPositive ? 'screen-positive' : 'screen-negative');
+    screenBadge.textContent = screenPositive ? 'Screen: Positive' : 'Screen: Negative';
+
+    // Severity
+    let severityLabel, severityClass;
+    if (total === 0) { severityLabel = 'Absent'; severityClass = 'severity-mild'; }
+    else if (total <= 9) { severityLabel = 'Mild'; severityClass = 'severity-mild'; }
+    else if (total <= 19) { severityLabel = 'Moderate'; severityClass = 'severity-moderate'; }
+    else { severityLabel = 'Severe'; severityClass = 'severity-severe'; }
+
+    const sevBadge = document.getElementById('severityBadge');
+    sevBadge.className = 'severity-badge ' + severityClass;
+    sevBadge.textContent = severityLabel;
+
+    // Progress
+    document.getElementById('progressBar').style.width = `${(rated / 23) * 100}%`;
+    document.getElementById('progressText').textContent = `${rated} of 23 rated`;
+
+    // Results card
+    document.getElementById('r_total').textContent = total;
+    document.getElementById('r_screen').textContent = screenTotal;
+
+    const dotScreen = document.getElementById('dot_screen');
+    const textScreen = document.getElementById('text_screen');
+    if (screenPositive) {
+        dotScreen.className = 'interp-dot dot-red';
+        textScreen.textContent = `Screening POSITIVE — ${screenPositiveCount} items scored ≥1 (items 1–14). Catatonia likely; consider further workup and treatment.`;
+    } else {
+        dotScreen.className = 'interp-dot dot-green';
+        textScreen.textContent = `Screening negative — fewer than 2 items scored ≥1 on items 1–14 (${screenPositiveCount} present).`;
+    }
+
+    const dotSev = document.getElementById('dot_severity');
+    const textSev = document.getElementById('text_severity');
+    dotSev.className = 'interp-dot ' + (total >= 20 ? 'dot-red' : total >= 10 ? 'interp-dot' : 'dot-green');
+    if (total === 0) dotSev.style.background = '#48bb78';
+    else if (total <= 9) { dotSev.style.background = '#ecc94b'; }
+    else if (total <= 19) { dotSev.style.background = '#ed8936'; }
+    else { dotSev.style.background = '#e53e3e'; }
+    textSev.textContent = `Total score ${total}/69 — ${severityLabel} (0–9: mild, 10–19: moderate, ≥20: severe).`;
+
+    // Item summary
+    const summary = document.getElementById('itemSummary');
+    summary.innerHTML = ITEMS.map((item, idx) => {
+        const s = scores[idx];
+        if (s === null || s === 0) return '';
+        return `<div class="summary-row">
+            <span class="s-name">${item.num}. ${item.name}</span>
+            <span class="s-score">${s}</span>
+        </div>`;
+    }).join('') || '<div style="font-size:0.8rem;color:#a0aec0;padding:4px 0;">No items scored above 0 yet.</div>';
+}
+
+function resetAll() {
+    if (!confirm('Reset all scores? This cannot be undone.')) return;
+    scores.fill(null);
+    ITEMS.forEach((_, idx) => {
+        const card = document.getElementById(`item-card-${idx}`);
+        card.classList.remove('scored', 'scored-high', 'open');
+        document.getElementById(`score-display-${idx}`).textContent = '—';
+        [0,1,2,3].forEach(v => {
+            const btn = document.getElementById(`btn-${idx}-${v}`);
+            if (btn) btn.classList.remove('selected', 'selected-high');
+        });
+    });
+    updateTotals();
+}
+
+function copyResults() {
+    const name = document.getElementById('patientName').value || 'Unknown';
+    const date = document.getElementById('assessDate').value || new Date().toISOString().slice(0,10);
+    const clinician = document.getElementById('clinician').value || 'Unknown';
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+    const screenTotal = scores.slice(0, 14).reduce((a, s) => a + (s ?? 0), 0);
+    const screenPositive = scores.slice(0, 14).filter(s => s !== null && s >= 1).length >= 2;
+
+    let severity;
+    if (total === 0) severity = 'Absent';
+    else if (total <= 9) severity = 'Mild';
+    else if (total <= 19) severity = 'Moderate';
+    else severity = 'Severe';
+
+    const positiveItems = ITEMS
+        .map((item, idx) => ({ item, score: scores[idx] }))
+        .filter(({ score }) => score !== null && score > 0)
+        .map(({ item, score }) => `  • ${item.name}: ${score}/3`)
+        .join('\n');
+
+    const text = `Bush-Francis Catatonia Rating Scale (BFCRS)
+Patient: ${name} | Date: ${date} | Clinician: ${clinician}
+
+Total Score: ${total}/69 (${severity})
+Screening Score (items 1-14): ${screenTotal}/42
+Screening: ${screenPositive ? 'POSITIVE' : 'Negative'}
+
+Positive Items:
+${positiveItems || '  None'}
+
+Note: This is a clinical rating scale and should be interpreted in conjunction with full clinical assessment.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Summary copied to clipboard.');
+    }).catch(() => {
+        prompt('Copy the text below:', text);
+    });
+}
+
+// Init
+buildItems();
+updateTotals();
+</script>
+</body>
+</html>
