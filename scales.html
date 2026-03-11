@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Rating Scales</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: #94a3b8;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.2s, transform 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card:hover {
+            border-color: #6366f1;
+            background: #243049;
+            transform: translateY(-2px);
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .tag-depression  { background: #1e3a5f; color: #93c5fd; }
+        .tag-anxiety     { background: #1a3a2a; color: #86efac; }
+        .tag-psychosis   { background: #3b1a4a; color: #d8b4fe; }
+        .tag-ptsd        { background: #3b2a1a; color: #fcd34d; }
+        .tag-addiction   { background: #3b1a1a; color: #fca5a5; }
+        .tag-mania       { background: #3b3a1a; color: #fde68a; }
+        .tag-ocd         { background: #1a3a3b; color: #67e8f9; }
+        .tag-catatonia   { background: #2a1a3b; color: #c4b5fd; }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #475569;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Clinical Rating Scales</h1>
+        <p>Interactive psychiatric and addiction assessment tools</p>
+    </header>
+
+    <div class="grid">
+        <a class="card" href="phq9.html">
+            <span class="card-tag tag-depression">Depression</span>
+            <div class="card-title">PHQ-9</div>
+            <div class="card-desc">Patient Health Questionnaire — 9-item depression screening tool</div>
+        </a>
+
+        <a class="card" href="hamd17.html">
+            <span class="card-tag tag-depression">Depression</span>
+            <div class="card-title">HAMD-17</div>
+            <div class="card-desc">Hamilton Depression Rating Scale — clinician-administered severity measure</div>
+        </a>
+
+        <a class="card" href="madrs.html">
+            <span class="card-tag tag-depression">Depression</span>
+            <div class="card-title">MADRS</div>
+            <div class="card-desc">Montgomery-Åsberg Depression Rating Scale — 10-item clinician scale</div>
+        </a>
+
+        <a class="card" href="gad7.html">
+            <span class="card-tag tag-anxiety">Anxiety</span>
+            <div class="card-title">GAD-7</div>
+            <div class="card-desc">Generalized Anxiety Disorder Scale — 7-item self-report measure</div>
+        </a>
+
+        <a class="card" href="hama.html">
+            <span class="card-tag tag-anxiety">Anxiety</span>
+            <div class="card-title">HAM-A</div>
+            <div class="card-desc">Hamilton Anxiety Rating Scale — 14-item clinician-rated scale</div>
+        </a>
+
+        <a class="card" href="pcl5.html">
+            <span class="card-tag tag-ptsd">PTSD</span>
+            <div class="card-title">PCL-5</div>
+            <div class="card-desc">PTSD Checklist for DSM-5 — 20-item self-report symptom measure</div>
+        </a>
+
+        <a class="card" href="panss.html">
+            <span class="card-tag tag-psychosis">Psychosis</span>
+            <div class="card-title">PANSS</div>
+            <div class="card-desc">Positive and Negative Syndrome Scale — schizophrenia symptom assessment</div>
+        </a>
+
+        <a class="card" href="bprs.html">
+            <span class="card-tag tag-psychosis">Psychosis</span>
+            <div class="card-title">BPRS-18</div>
+            <div class="card-desc">Brief Psychiatric Rating Scale — 18-item broad psychiatric symptom measure</div>
+        </a>
+
+        <a class="card" href="ymrs.html">
+            <span class="card-tag tag-mania">Mania</span>
+            <div class="card-title">YMRS</div>
+            <div class="card-desc">Young Mania Rating Scale — 11-item clinician-rated mania severity scale</div>
+        </a>
+
+        <a class="card" href="ybocs.html">
+            <span class="card-tag tag-ocd">OCD</span>
+            <div class="card-title">Y-BOCS</div>
+            <div class="card-desc">Yale-Brown Obsessive Compulsive Scale — obsession and compulsion severity</div>
+        </a>
+
+        <a class="card" href="audit.html">
+            <span class="card-tag tag-addiction">Addiction</span>
+            <div class="card-title">AUDIT</div>
+            <div class="card-desc">Alcohol Use Disorders Identification Test — 10-item screening tool</div>
+        </a>
+
+        <a class="card" href="ciwa.html">
+            <span class="card-tag tag-addiction">Addiction</span>
+            <div class="card-title">CIWA-Ar</div>
+            <div class="card-desc">Alcohol Withdrawal Assessment Scale — monitors withdrawal severity</div>
+        </a>
+
+        <a class="card" href="catatonia.html">
+            <span class="card-tag tag-catatonia">Catatonia</span>
+            <div class="card-title">Bush-Francis CARS</div>
+            <div class="card-desc">Catatonia Rating Scale — 23-item clinician-rated assessment</div>
+        </a>
+    </div>
+
+    <footer>
+        <p>For clinical and educational use only. Not a substitute for professional judgment.</p>
+    </footer>
+</body>
+</html>
