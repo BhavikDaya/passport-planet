@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamilton Anxiety Rating Scale (HAM-A)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            color: white;
+            padding: 20px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .back-btn {
+            display: inline-block;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+        .back-btn:hover { color: white; }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* Patient Info */
+        .patient-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #059669;
+        }
+
+        .patient-card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 14px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .patient-grid { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .field-group input {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            color: #1a202c;
+            transition: border-color 0.15s;
+        }
+
+        .field-group input:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.12);
+        }
+
+        /* Score summary bar */
+        .score-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .score-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-box .score-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #064e3b;
+        }
+
+        .score-box .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .severity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .severity-mild { background: #fefcbf; color: #744210; }
+        .severity-mild-moderate { background: #fbd38d; color: #744210; }
+        .severity-moderate-severe { background: #fed7d7; color: #742a2a; }
+        .severity-severe { background: #feb2b2; color: #63171b; }
+
+        /* Instructions banner */
+        .instructions {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #064e3b;
+            line-height: 1.5;
+        }
+
+        .instructions strong { font-weight: 700; }
+
+        /* Section header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 12px;
+        }
+
+        .section-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4a5568;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            color: #718096;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Item cards */
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid #e8edf2;
+            overflow: hidden;
+            transition: box-shadow 0.15s;
+        }
+
+        .item-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-card.scored {
+            border-left: 4px solid #059669;
+        }
+
+        .item-card.scored-high {
+            border-left: 4px solid #e53e3e;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .item-num {
+            min-width: 28px;
+            height: 28px;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .item-card.scored .item-num {
+            background: #059669;
+            color: white;
+        }
+
+        .item-card.scored-high .item-num {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .item-title-block {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .item-subtitle {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .item-score-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #a0aec0;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-card.scored .item-score-display { color: #059669; }
+        .item-card.scored-high .item-score-display { color: #e53e3e; }
+
+        .item-body {
+            padding: 0 16px 16px 56px;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 8px 10px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        /* Score options */
+        .score-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+
+        @media (max-width: 500px) {
+            .score-options { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .score-btn {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            transition: all 0.12s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .score-btn:hover {
+            border-color: #059669;
+            background: #ecfdf5;
+        }
+
+        .score-btn.selected {
+            border-color: #059669;
+            background: #059669;
+            color: white;
+        }
+
+        .score-btn.selected-high {
+            border-color: #e53e3e;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .score-btn .btn-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-btn .btn-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            opacity: 0.85;
+        }
+
+        .score-btn .btn-desc {
+            font-size: 0.67rem;
+            color: #718096;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .score-btn.selected .btn-desc,
+        .score-btn.selected-high .btn-desc { color: rgba(255,255,255,0.8); }
+
+        /* Results section */
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #064e3b;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .result-block h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .result-block .big-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #064e3b;
+            line-height: 1;
+        }
+
+        .result-block .sub-text {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .interpretation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .interp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .interp-row:last-child { border-bottom: none; }
+
+        .interp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-green { background: #48bb78; }
+        .dot-red { background: #e53e3e; }
+        .dot-yellow { background: #ed8936; }
+
+        .item-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #4a5568;
+        }
+
+        .summary-row .s-name { flex: 1; }
+        .summary-row .s-score {
+            font-weight: 700;
+            color: #064e3b;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover { background: #064e3b; }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover { border-color: #059669; color: #059669; }
+
+        .btn-danger {
+            background: white;
+            color: #e53e3e;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+
+        /* Progress bar */
+        .progress-bar-wrap {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #059669, #34d399);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .score-bar { position: static; box-shadow: none; }
+            .action-row { display: none; }
+            header { background: #064e3b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .item-card { break-inside: avoid; }
+        }
+
+        /* Toggle chevron */
+        .chevron {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .item-card.open .chevron { transform: rotate(180deg); }
+
+        .item-body { display: none; }
+        .item-card.open .item-body { display: block; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">← Home</a>
+    <h1>Hamilton Anxiety Rating Scale (HAM-A)</h1>
+    <p>14-item clinician-administered scale &bull; Max score: 56</p>
+</header>
+
+<div class="container">
+
+    <!-- Patient Info -->
+    <div class="patient-card">
+        <h2>Patient Information</h2>
+        <div class="patient-grid">
+            <div class="field-group">
+                <label for="patientName">Patient Name / ID</label>
+                <input type="text" id="patientName" placeholder="Name or identifier">
+            </div>
+            <div class="field-group">
+                <label for="patientDOB">Date of Birth</label>
+                <input type="date" id="patientDOB">
+            </div>
+            <div class="field-group">
+                <label for="assessDate">Assessment Date</label>
+                <input type="date" id="assessDate">
+            </div>
+            <div class="field-group">
+                <label for="clinician">Clinician</label>
+                <input type="text" id="clinician" placeholder="Name / designation">
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky score bar -->
+    <div class="score-bar">
+        <div class="score-group">
+            <div class="score-box">
+                <div class="score-num" id="totalScore">0</div>
+                <div class="score-label">Total Score / 56</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span class="severity-badge severity-mild" id="severityBadge">Mild Anxiety</span>
+        </div>
+        <div style="flex:1;min-width:120px;">
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 14 rated</div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <strong>Instructions:</strong> Rate the severity of each symptom cluster based on the patient's experience over the past week. Each item is rated 0–4.
+    </div>
+
+    <!-- Items will be rendered here by JS -->
+    <div id="itemsContainer"></div>
+
+    <!-- Results -->
+    <div class="results-card" id="resultsCard">
+        <h2>Assessment Summary</h2>
+        <div class="results-grid">
+            <div class="result-block">
+                <h3>Total HAM-A Score</h3>
+                <div class="big-num" id="r_total">0</div>
+                <div class="sub-text">out of 56 maximum</div>
+            </div>
+            <div class="result-block">
+                <h3>Severity Classification</h3>
+                <div class="big-num" id="r_severity" style="font-size:1.3rem;padding-top:6px;">—</div>
+                <div class="sub-text" id="r_severity_range"></div>
+            </div>
+        </div>
+
+        <div class="interpretation-box">
+            <h3>Interpretation</h3>
+            <div class="interp-row">
+                <div class="interp-dot" id="dot_severity"></div>
+                <div id="text_severity">Severity classification will appear here</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>0–17: Mild anxiety &bull; 18–24: Mild to moderate &bull; 25–30: Moderate to severe &bull; 31–56: Severe</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>This scale is a clinical aid only. Diagnosis and management require full clinical assessment.</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Item Scores</h3>
+            <div class="item-summary" id="itemSummary"></div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn-secondary" onclick="copyResults()">Copy Summary</button>
+            <button class="btn-danger" onclick="resetAll()">Reset All</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const OPTIONS = [
+    { score: 0, label: "0", desc: "Not present" },
+    { score: 1, label: "1", desc: "Mild" },
+    { score: 2, label: "2", desc: "Moderate" },
+    { score: 3, label: "3", desc: "Severe" },
+    { score: 4, label: "4", desc: "Very severe / grossly disabling" }
+];
+
+const ITEMS = [
+    {
+        num: 1,
+        name: "Anxious Mood",
+        subtitle: "Worries, anticipation of the worst, fearful anticipation, irritability"
+    },
+    {
+        num: 2,
+        name: "Tension",
+        subtitle: "Feelings of tension, fatigability, startle response, moved to tears, trembling, feelings of restlessness, inability to relax"
+    },
+    {
+        num: 3,
+        name: "Fears",
+        subtitle: "Of dark, strangers, being left alone, animals, traffic, crowds"
+    },
+    {
+        num: 4,
+        name: "Insomnia",
+        subtitle: "Difficulty falling asleep, broken sleep, unsatisfying sleep, fatigue on waking, dreams, nightmares, night terrors"
+    },
+    {
+        num: 5,
+        name: "Intellectual (Cognitive)",
+        subtitle: "Difficulty concentrating, poor memory"
+    },
+    {
+        num: 6,
+        name: "Depressed Mood",
+        subtitle: "Loss of interest, lack of pleasure in hobbies, depression, early waking, diurnal swing"
+    },
+    {
+        num: 7,
+        name: "Somatic (Muscular)",
+        subtitle: "Pains and aches, twitching, stiffness, myoclonic jerks, grinding of teeth, unsteady voice, increased muscular tone"
+    },
+    {
+        num: 8,
+        name: "Somatic (Sensory)",
+        subtitle: "Tinnitus, blurring of vision, hot and cold flushes, feelings of weakness, pricking sensation"
+    },
+    {
+        num: 9,
+        name: "Cardiovascular Symptoms",
+        subtitle: "Tachycardia, palpitations, chest pain, throbbing of vessels, fainting feelings, missing beat"
+    },
+    {
+        num: 10,
+        name: "Respiratory Symptoms",
+        subtitle: "Pressure or constriction in chest, choking feelings, sighing, dyspnoea"
+    },
+    {
+        num: 11,
+        name: "Gastrointestinal Symptoms",
+        subtitle: "Difficulty swallowing, wind, abdominal pain, burning sensations, abdominal fullness, nausea, vomiting, loose bowels, weight loss, constipation"
+    },
+    {
+        num: 12,
+        name: "Genitourinary Symptoms",
+        subtitle: "Frequency of micturition, urgency, amenorrhoea, menorrhagia, frigidity, premature ejaculation, loss of libido, impotence"
+    },
+    {
+        num: 13,
+        name: "Autonomic Symptoms",
+        subtitle: "Dry mouth, flushing, pallor, tendency to sweat, giddiness, tension headache, raising of hair"
+    },
+    {
+        num: 14,
+        name: "Behaviour at Interview",
+        subtitle: "Fidgeting, restlessness or pacing, tremor of hands, furrowed brow, strained face, sighing, rapid respiration, facial pallor, swallowing"
+    }
+];
+
+// State
+const scores = new Array(14).fill(null);
+
+// Set today's date as default for assessment date
+document.getElementById('assessDate').valueAsDate = new Date();
+
+function buildItems() {
+    const container = document.getElementById('itemsContainer');
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = `
+        <h2>HAM-A Items (1–14)</h2>
+        <div class="section-line"></div>
+        <span class="section-tag">Each item rated 0–4</span>`;
+    container.appendChild(header);
+
+    ITEMS.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `item-card-${idx}`;
+
+        card.innerHTML = `
+            <div class="item-header" onclick="toggleCard(${idx})">
+                <div class="item-num">${item.num}</div>
+                <div class="item-title-block">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-subtitle">${item.subtitle}</div>
+                </div>
+                <div class="item-score-display" id="score-display-${idx}">—</div>
+                <div class="chevron">▼</div>
+            </div>
+            <div class="item-body">
+                <div class="score-options">
+                    ${OPTIONS.map(opt => `
+                        <button class="score-btn" id="btn-${idx}-${opt.score}" onclick="setScore(${idx}, ${opt.score})">
+                            <span class="btn-num">${opt.label}</span>
+                            <span class="btn-desc">${opt.desc}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>`;
+
+        container.appendChild(card);
+    });
+}
+
+function toggleCard(idx) {
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.toggle('open');
+}
+
+function setScore(idx, value) {
+    scores[idx] = value;
+
+    OPTIONS.forEach(opt => {
+        const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+        btn.classList.remove('selected', 'selected-high');
+        if (opt.score === value) {
+            btn.classList.add(value >= 3 ? 'selected-high' : 'selected');
+        }
+    });
+
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.remove('scored', 'scored-high');
+    if (value > 0) {
+        card.classList.add(value >= 3 ? 'scored-high' : 'scored');
+    }
+
+    const disp = document.getElementById(`score-display-${idx}`);
+    disp.textContent = value;
+
+    updateTotals();
+}
+
+function getSeverity(total) {
+    if (total <= 17) return { label: 'Mild Anxiety',            cls: 'severity-mild',            range: '0–17',  dotColor: '#ecc94b' };
+    if (total <= 24) return { label: 'Mild to Moderate',        cls: 'severity-mild-moderate',   range: '18–24', dotColor: '#ed8936' };
+    if (total <= 30) return { label: 'Moderate to Severe',      cls: 'severity-moderate-severe', range: '25–30', dotColor: '#e53e3e' };
+    return              { label: 'Severe Anxiety',           cls: 'severity-severe',          range: '31–56', dotColor: '#c53030' };
+}
+
+function updateTotals() {
+    const rated = scores.filter(s => s !== null).length;
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+
+    document.getElementById('totalScore').textContent = total;
+
+    const sev = getSeverity(total);
+    const sevBadge = document.getElementById('severityBadge');
+    sevBadge.className = 'severity-badge ' + sev.cls;
+    sevBadge.textContent = sev.label;
+
+    document.getElementById('progressBar').style.width = `${(rated / 14) * 100}%`;
+    document.getElementById('progressText').textContent = `${rated} of 14 rated`;
+
+    document.getElementById('r_total').textContent = total;
+    document.getElementById('r_severity').textContent = sev.label;
+    document.getElementById('r_severity_range').textContent = `Score range: ${sev.range}`;
+
+    const dotSev = document.getElementById('dot_severity');
+    dotSev.style.background = sev.dotColor;
+    document.getElementById('text_severity').textContent = `Total score ${total}/56 — ${sev.label} (range ${sev.range}).`;
+
+    const summary = document.getElementById('itemSummary');
+    summary.innerHTML = ITEMS.map((item, idx) => {
+        const s = scores[idx];
+        if (s === null || s === 0) return '';
+        return `<div class="summary-row">
+            <span class="s-name">${item.num}. ${item.name}</span>
+            <span class="s-score">${s}/4</span>
+        </div>`;
+    }).join('') || '<div style="font-size:0.8rem;color:#a0aec0;padding:4px 0;">No items scored above 0 yet.</div>';
+}
+
+function resetAll() {
+    if (!confirm('Reset all scores? This cannot be undone.')) return;
+    scores.fill(null);
+    ITEMS.forEach((_, idx) => {
+        const card = document.getElementById(`item-card-${idx}`);
+        card.classList.remove('scored', 'scored-high', 'open');
+        document.getElementById(`score-display-${idx}`).textContent = '—';
+        [0,1,2,3,4].forEach(v => {
+            const btn = document.getElementById(`btn-${idx}-${v}`);
+            if (btn) btn.classList.remove('selected', 'selected-high');
+        });
+    });
+    updateTotals();
+}
+
+function copyResults() {
+    const name = document.getElementById('patientName').value || 'Unknown';
+    const date = document.getElementById('assessDate').value || new Date().toISOString().slice(0,10);
+    const clinician = document.getElementById('clinician').value || 'Unknown';
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+    const sev = getSeverity(total);
+
+    const positiveItems = ITEMS
+        .map((item, idx) => ({ item, score: scores[idx] }))
+        .filter(({ score }) => score !== null && score > 0)
+        .map(({ item, score }) => `  • ${item.name}: ${score}/4`)
+        .join('\n');
+
+    const text = `Hamilton Anxiety Rating Scale (HAM-A)
+Patient: ${name} | Date: ${date} | Clinician: ${clinician}
+
+Total Score: ${total}/56
+Severity: ${sev.label} (${sev.range})
+
+Items Scored > 0:
+${positiveItems || '  None'}
+
+Note: This is a clinical rating scale and should be interpreted in conjunction with full clinical assessment.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Summary copied to clipboard.');
+    }).catch(() => {
+        prompt('Copy the text below:', text);
+    });
+}
+
+// Init
+buildItems();
+updateTotals();
+</script>
+</body>
+</html>
