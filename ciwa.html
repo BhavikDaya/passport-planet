@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIWA-Ar — Alcohol Withdrawal Assessment</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #7c2d12 0%, #c2410c 100%);
+            color: white;
+            padding: 20px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .back-btn {
+            display: inline-block;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+        .back-btn:hover { color: white; }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #c2410c;
+        }
+
+        .patient-card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 14px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .patient-grid { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .field-group input {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            color: #1a202c;
+            transition: border-color 0.15s;
+        }
+
+        .field-group input:focus {
+            outline: none;
+            border-color: #c2410c;
+            box-shadow: 0 0 0 3px rgba(194,65,12,0.12);
+        }
+
+        /* Warning / clinical note box */
+        .warning-card {
+            background: #fffbeb;
+            border: 1.5px solid #f59e0b;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .warning-card h3 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #92400e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .warning-card p {
+            font-size: 0.83rem;
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        .warning-card ul {
+            margin-top: 6px;
+            padding-left: 18px;
+            font-size: 0.83rem;
+            color: #78350f;
+            line-height: 1.7;
+        }
+
+        .score-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .score-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-box .score-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #7c2d12;
+        }
+
+        .score-box .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .severity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .sev-mild { background: #c6f6d5; color: #22543d; }
+        .sev-moderate { background: #fefcbf; color: #744210; }
+        .sev-severe { background: #fbd38d; color: #744210; }
+        .sev-very-severe { background: #fed7d7; color: #742a2a; }
+
+        .instructions {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #7c2d12;
+            line-height: 1.5;
+        }
+
+        .instructions strong { font-weight: 700; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 12px;
+        }
+
+        .section-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            color: #718096;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid #e8edf2;
+            overflow: hidden;
+            transition: box-shadow 0.15s;
+        }
+
+        .item-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-card.scored {
+            border-left: 4px solid #c2410c;
+        }
+
+        .item-card.scored-high {
+            border-left: 4px solid #e53e3e;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .item-num {
+            min-width: 28px;
+            height: 28px;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .item-card.scored .item-num {
+            background: #c2410c;
+            color: white;
+        }
+
+        .item-card.scored-high .item-num {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .item-title-block {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .item-subtitle {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .item-score-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #a0aec0;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-card.scored .item-score-display { color: #c2410c; }
+        .item-card.scored-high .item-score-display { color: #e53e3e; }
+
+        .item-body {
+            padding: 0 16px 16px 56px;
+            display: none;
+        }
+
+        .item-card.open .item-body { display: block; }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 8px 10px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        .score-options {
+            display: grid;
+            gap: 6px;
+        }
+
+        .score-options-8 { grid-template-columns: repeat(4, 1fr); }
+        .score-options-5 { grid-template-columns: repeat(5, 1fr); }
+
+        @media (max-width: 500px) {
+            .score-options-8, .score-options-5 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .score-btn {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            transition: all 0.12s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .score-btn:hover {
+            border-color: #c2410c;
+            background: #fff7ed;
+        }
+
+        .score-btn.selected {
+            border-color: #c2410c;
+            background: #c2410c;
+            color: white;
+        }
+
+        .score-btn.selected-high {
+            border-color: #e53e3e;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .score-btn .btn-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-btn .btn-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            opacity: 0.9;
+            line-height: 1.3;
+            margin-top: 1px;
+        }
+
+        .score-btn.selected .btn-label,
+        .score-btn.selected-high .btn-label { color: rgba(255,255,255,0.9); }
+
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #7c2d12;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .result-block h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .result-block .big-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #7c2d12;
+            line-height: 1;
+        }
+
+        .result-block .sub-text {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .interpretation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .interp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .interp-row:last-child { border-bottom: none; }
+
+        .interp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-green { background: #48bb78; }
+        .dot-red { background: #e53e3e; }
+        .dot-yellow { background: #ed8936; }
+
+        .threshold-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.83rem;
+        }
+
+        .threshold-table th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #718096;
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .threshold-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #f0f4f8;
+        }
+
+        .threshold-table tr.active td {
+            font-weight: 700;
+            background: #fff7ed;
+        }
+
+        .item-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #4a5568;
+        }
+
+        .summary-row .s-name { flex: 1; }
+        .summary-row .s-score {
+            font-weight: 700;
+            color: #7c2d12;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #c2410c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover { background: #7c2d12; }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover { border-color: #c2410c; color: #c2410c; }
+
+        .btn-danger {
+            background: white;
+            color: #e53e3e;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+
+        .progress-bar-wrap {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c2410c, #fb923c);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        .chevron {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .item-card.open .chevron { transform: rotate(180deg); }
+
+        @media print {
+            body { background: white; }
+            .score-bar { position: static; box-shadow: none; }
+            .action-row { display: none; }
+            header { background: #7c2d12 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .item-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">← Home</a>
+    <h1>CIWA-Ar — Alcohol Withdrawal Assessment</h1>
+    <p>Clinical Institute Withdrawal Assessment for Alcohol, Revised &bull; Max score: 67</p>
+</header>
+
+<div class="container">
+
+    <!-- Clinical warning box -->
+    <div class="warning-card">
+        <h3>⚠ Clinical Use</h3>
+        <p>CIWA-Ar should be administered regularly (e.g., every 4–8 hours). Use in conjunction with full clinical assessment.</p>
+        <ul>
+            <li>Pharmacotherapy is generally recommended for scores <strong>≥8–10</strong></li>
+            <li>Scores <strong>≥15</strong> indicate severe withdrawal requiring urgent treatment</li>
+            <li>Scores <strong>≥20</strong> indicate high risk of seizure and delirium tremens (DTs)</li>
+        </ul>
+    </div>
+
+    <!-- Patient Info -->
+    <div class="patient-card">
+        <h2>Patient Information</h2>
+        <div class="patient-grid">
+            <div class="field-group">
+                <label for="patientName">Patient Name / ID</label>
+                <input type="text" id="patientName" placeholder="Name or identifier">
+            </div>
+            <div class="field-group">
+                <label for="patientDOB">Date of Birth</label>
+                <input type="date" id="patientDOB">
+            </div>
+            <div class="field-group">
+                <label for="assessDate">Assessment Date &amp; Time</label>
+                <input type="datetime-local" id="assessDate">
+            </div>
+            <div class="field-group">
+                <label for="clinician">Clinician</label>
+                <input type="text" id="clinician" placeholder="Name / designation">
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky score bar -->
+    <div class="score-bar">
+        <div class="score-group">
+            <div class="score-box">
+                <div class="score-num" id="totalScore">0</div>
+                <div class="score-label">Total Score / 67</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span class="severity-badge sev-mild" id="severityBadge">Mild / Absent</span>
+        </div>
+        <div style="flex:1;min-width:120px;">
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 10 rated</div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <strong>Instructions:</strong> Assess and rate each symptom at the time of evaluation. Rate each item by observation and/or questioning. Items 1–9 are scored 0–7; Item 10 (orientation) is scored 0–4.
+    </div>
+
+    <!-- Items rendered by JS -->
+    <div id="itemsContainer"></div>
+
+    <!-- Results -->
+    <div class="results-card" id="resultsCard">
+        <h2>Assessment Summary</h2>
+        <div class="results-grid">
+            <div class="result-block">
+                <h3>Total CIWA-Ar Score</h3>
+                <div class="big-num" id="r_total">0</div>
+                <div class="sub-text">out of 67 maximum</div>
+            </div>
+            <div class="result-block">
+                <h3>Severity</h3>
+                <div class="big-num" id="r_severity" style="font-size:1.1rem;padding-top:4px;">Mild / Absent</div>
+                <div class="sub-text" id="r_severity_sub">Score &lt;8 — monitor only</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box">
+            <h3>Clinical Thresholds</h3>
+            <table class="threshold-table">
+                <thead><tr><th>Score</th><th>Severity</th><th>Action</th></tr></thead>
+                <tbody>
+                    <tr id="row_mild"><td>&lt;8</td><td>Mild / Absent</td><td>Monitor; no pharmacotherapy routinely required</td></tr>
+                    <tr id="row_mod"><td>8–14</td><td>Moderate</td><td>Consider pharmacotherapy (e.g., benzodiazepines)</td></tr>
+                    <tr id="row_sev"><td>15–19</td><td>Severe</td><td>Pharmacotherapy recommended; close monitoring</td></tr>
+                    <tr id="row_vsev"><td>≥20</td><td>Very Severe</td><td>Urgent treatment — high risk of seizure/DTs</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Interpretation</h3>
+            <div class="interp-row">
+                <div class="interp-dot" id="dot_severity"></div>
+                <div id="text_severity">Severity classification will appear here.</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>CIWA-Ar scores guide pharmacotherapy but must be interpreted alongside vital signs, clinical history, and judgement. Repeat assessments every 4–8 hours during active withdrawal.</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Item Scores (non-zero)</h3>
+            <div class="item-summary" id="itemSummary"></div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn-secondary" onclick="copyResults()">Copy Summary</button>
+            <button class="btn-danger" onclick="resetAll()">Reset All</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const ITEMS = [
+    {
+        num: 1,
+        name: "Nausea / Vomiting",
+        subtitle: 'Ask: "Do you feel sick to your stomach? Have you vomited?"',
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "No nausea, no vomiting" },
+            { score: 1, label: "1 — Very mild", desc: "Mild nausea, no dry heaves" },
+            { score: 2, label: "2", desc: "Mild nausea with dry heaves" },
+            { score: 3, label: "3", desc: "Moderate nausea" },
+            { score: 4, label: "4 — Moderate", desc: "Intermittent nausea with dry heaves" },
+            { score: 5, label: "5", desc: "Frequent nausea with dry heaves" },
+            { score: 6, label: "6", desc: "Severe nausea and vomiting" },
+            { score: 7, label: "7 — Severe", desc: "Constant nausea, frequent dry heaves and vomiting" }
+        ]
+    },
+    {
+        num: 2,
+        name: "Tremor",
+        subtitle: "Observe: arms extended, fingers spread apart",
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "No tremor" },
+            { score: 1, label: "1 — Fingertip", desc: "Not visible, can be felt fingertip to fingertip" },
+            { score: 2, label: "2", desc: "Slight visible tremor" },
+            { score: 3, label: "3", desc: "Moderate tremor, arms extended" },
+            { score: 4, label: "4 — Moderate", desc: "Moderate tremor, arms extended" },
+            { score: 5, label: "5", desc: "Marked tremor, arms extended" },
+            { score: 6, label: "6", desc: "Severe tremor even at rest" },
+            { score: 7, label: "7 — Severe", desc: "Severe even with arms not extended" }
+        ]
+    },
+    {
+        num: 3,
+        name: "Paroxysmal Sweats",
+        subtitle: "Observe",
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "No sweat visible" },
+            { score: 1, label: "1 — Palms moist", desc: "Barely perceptible sweating; palms moist" },
+            { score: 2, label: "2", desc: "Mild sweating" },
+            { score: 3, label: "3", desc: "Moderate sweating" },
+            { score: 4, label: "4 — Beads", desc: "Beads of sweat obvious on forehead" },
+            { score: 5, label: "5", desc: "Profuse sweating" },
+            { score: 6, label: "6", desc: "Very profuse sweating" },
+            { score: 7, label: "7 — Drenching", desc: "Drenching sweats" }
+        ]
+    },
+    {
+        num: 4,
+        name: "Anxiety",
+        subtitle: 'Ask: "Do you feel nervous?"',
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — At ease", desc: "No anxiety; at ease" },
+            { score: 1, label: "1 — Mild", desc: "Mildly anxious" },
+            { score: 2, label: "2", desc: "Mild anxiety" },
+            { score: 3, label: "3", desc: "Moderate anxiety" },
+            { score: 4, label: "4 — Moderate", desc: "Moderately anxious or guarded" },
+            { score: 5, label: "5", desc: "Marked anxiety" },
+            { score: 6, label: "6", desc: "Severe anxiety" },
+            { score: 7, label: "7 — Panic", desc: "Equivalent to acute panic states; very severe anxiety" }
+        ]
+    },
+    {
+        num: 5,
+        name: "Agitation",
+        subtitle: "Observe",
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — Normal", desc: "Normal activity" },
+            { score: 1, label: "1 — Slightly", desc: "Somewhat more than normal activity" },
+            { score: 2, label: "2", desc: "Mildly restless" },
+            { score: 3, label: "3", desc: "Moderately restless" },
+            { score: 4, label: "4 — Moderate", desc: "Moderately fidgety and restless" },
+            { score: 5, label: "5", desc: "Markedly agitated" },
+            { score: 6, label: "6", desc: "Severely agitated" },
+            { score: 7, label: "7 — Severe", desc: "Paces back and forth during most of interview, or constantly thrashes about" }
+        ]
+    },
+    {
+        num: 6,
+        name: "Tactile Disturbances",
+        subtitle: 'Ask: "Have you any itching, pins and needles, burning, numbness, or feeling of bugs crawling on your skin?"',
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "None" },
+            { score: 1, label: "1 — Very mild", desc: "Very mild itching, pins and needles, burning or numbness" },
+            { score: 2, label: "2 — Mild", desc: "Mild itching, pins and needles, burning or numbness" },
+            { score: 3, label: "3 — Moderate", desc: "Moderate itching, pins and needles, burning or numbness" },
+            { score: 4, label: "4 — Mod. severe", desc: "Moderately severe hallucinations" },
+            { score: 5, label: "5 — Severe", desc: "Severe hallucinations" },
+            { score: 6, label: "6 — Extreme", desc: "Extremely severe hallucinations" },
+            { score: 7, label: "7 — Continuous", desc: "Continuous hallucinations" }
+        ]
+    },
+    {
+        num: 7,
+        name: "Auditory Disturbances",
+        subtitle: 'Ask: "Are you more aware of sounds? Are they harsh? Do they frighten you? Are you hearing things you know are not there?"',
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "Not present" },
+            { score: 1, label: "1 — Very mild", desc: "Very mild harshness or ability to frighten" },
+            { score: 2, label: "2 — Mild", desc: "Mild harshness or ability to frighten" },
+            { score: 3, label: "3 — Moderate", desc: "Moderate harshness or ability to frighten" },
+            { score: 4, label: "4 — Mod. severe", desc: "Moderately severe hallucinations" },
+            { score: 5, label: "5 — Severe", desc: "Severe hallucinations" },
+            { score: 6, label: "6 — Extreme", desc: "Extremely severe hallucinations" },
+            { score: 7, label: "7 — Continuous", desc: "Continuous hallucinations" }
+        ]
+    },
+    {
+        num: 8,
+        name: "Visual Disturbances",
+        subtitle: 'Ask: "Does the light appear too bright? Is colour different? Does it hurt your eyes? Are you seeing things you know are not there?"',
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "Not present" },
+            { score: 1, label: "1 — Very mild", desc: "Very mild sensitivity" },
+            { score: 2, label: "2 — Mild", desc: "Mild sensitivity" },
+            { score: 3, label: "3 — Moderate", desc: "Moderate sensitivity" },
+            { score: 4, label: "4 — Mod. severe", desc: "Moderately severe hallucinations" },
+            { score: 5, label: "5 — Severe", desc: "Severe hallucinations" },
+            { score: 6, label: "6 — Extreme", desc: "Extremely severe hallucinations" },
+            { score: 7, label: "7 — Continuous", desc: "Continuous hallucinations" }
+        ]
+    },
+    {
+        num: 9,
+        name: "Headache / Fullness in Head",
+        subtitle: 'Ask: "Does your head feel different? Does it feel like there is a band around your head?" Do not rate dizziness.',
+        maxScore: 7,
+        options: [
+            { score: 0, label: "0 — None", desc: "Not present" },
+            { score: 1, label: "1 — Very mild", desc: "Very mild" },
+            { score: 2, label: "2 — Mild", desc: "Mild" },
+            { score: 3, label: "3 — Moderate", desc: "Moderate" },
+            { score: 4, label: "4 — Mod. severe", desc: "Moderately severe" },
+            { score: 5, label: "5 — Severe", desc: "Severe" },
+            { score: 6, label: "6 — Very severe", desc: "Very severe" },
+            { score: 7, label: "7 — Extreme", desc: "Extremely severe" }
+        ]
+    },
+    {
+        num: 10,
+        name: "Orientation / Clouding of Sensorium",
+        subtitle: 'Ask: "What day is this? Where are you? Who am I?" (scored 0–4)',
+        maxScore: 4,
+        options: [
+            { score: 0, label: "0 — Oriented", desc: "Oriented; can do serial additions" },
+            { score: 1, label: "1 — Uncertain", desc: "Cannot do serial additions or uncertain about date" },
+            { score: 2, label: "2 — Date ±2 days", desc: "Date disorientation by no more than 2 calendar days" },
+            { score: 3, label: "3 — Date >2 days", desc: "Date disorientation by more than 2 calendar days" },
+            { score: 4, label: "4 — Disoriented", desc: "Disoriented for place and/or person" }
+        ]
+    }
+];
+
+const scores = new Array(10).fill(null);
+
+// Set current datetime
+const now = new Date();
+const localDT = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+document.getElementById('assessDate').value = localDT;
+
+function buildItems() {
+    const container = document.getElementById('itemsContainer');
+
+    const hdr1 = document.createElement('div');
+    hdr1.className = 'section-header';
+    hdr1.innerHTML = `<h2>Items 1–9 — Withdrawal Symptoms</h2><div class="section-line"></div><span class="section-tag">Scored 0–7 each</span>`;
+    container.appendChild(hdr1);
+
+    ITEMS.forEach((item, idx) => {
+        if (idx === 9) {
+            const hdr2 = document.createElement('div');
+            hdr2.className = 'section-header';
+            hdr2.innerHTML = `<h2>Item 10 — Orientation</h2><div class="section-line"></div><span class="section-tag">Scored 0–4</span>`;
+            container.appendChild(hdr2);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `item-card-${idx}`;
+
+        const gridClass = item.maxScore === 4 ? 'score-options score-options-5' : 'score-options score-options-8';
+
+        card.innerHTML = `
+            <div class="item-header" onclick="toggleCard(${idx})">
+                <div class="item-num">${item.num}</div>
+                <div class="item-title-block">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-subtitle">${item.subtitle}</div>
+                </div>
+                <div class="item-score-display" id="score-display-${idx}">—</div>
+                <div class="chevron">▼</div>
+            </div>
+            <div class="item-body">
+                <div class="score-options ${item.maxScore === 4 ? 'score-options-5' : 'score-options-8'}">
+                    ${item.options.map(opt => `
+                        <button class="score-btn" id="btn-${idx}-${opt.score}" onclick="setScore(${idx}, ${opt.score})">
+                            <span class="btn-num">${opt.score}</span>
+                            <span class="btn-label">${opt.label.replace(/^\d+ — /, '')}</span>
+                            <span style="font-size:0.6rem;color:#718096;line-height:1.2;margin-top:1px;text-align:center;">${opt.desc}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>`;
+
+        container.appendChild(card);
+    });
+}
+
+function toggleCard(idx) {
+    document.getElementById(`item-card-${idx}`).classList.toggle('open');
+}
+
+function setScore(idx, value) {
+    scores[idx] = value;
+
+    ITEMS[idx].options.forEach(opt => {
+        const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+        btn.classList.remove('selected', 'selected-high');
+        if (opt.score === value) {
+            btn.classList.add(value >= 4 ? 'selected-high' : 'selected');
+        }
+    });
+
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.remove('scored', 'scored-high');
+    if (value > 0) card.classList.add(value >= 4 ? 'scored-high' : 'scored');
+
+    document.getElementById(`score-display-${idx}`).textContent = value;
+    updateTotals();
+}
+
+function updateTotals() {
+    const rated = scores.filter(s => s !== null).length;
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+
+    document.getElementById('totalScore').textContent = total;
+    document.getElementById('r_total').textContent = total;
+
+    let sevLabel, sevClass, sevSub, dotColor;
+    if (total < 8) {
+        sevLabel = 'Mild / Absent'; sevClass = 'sev-mild'; sevSub = 'Score <8 — monitor only'; dotColor = '#48bb78';
+    } else if (total <= 14) {
+        sevLabel = 'Moderate'; sevClass = 'sev-moderate'; sevSub = 'Score 8–14 — consider pharmacotherapy'; dotColor = '#ecc94b';
+    } else if (total <= 19) {
+        sevLabel = 'Severe'; sevClass = 'sev-severe'; sevSub = 'Score 15–19 — pharmacotherapy recommended'; dotColor = '#ed8936';
+    } else {
+        sevLabel = 'Very Severe'; sevClass = 'sev-very-severe'; sevSub = 'Score ≥20 — urgent treatment required'; dotColor = '#e53e3e';
+    }
+
+    const sevBadge = document.getElementById('severityBadge');
+    sevBadge.className = 'severity-badge ' + sevClass;
+    sevBadge.textContent = sevLabel;
+
+    document.getElementById('r_severity').textContent = sevLabel;
+    document.getElementById('r_severity_sub').textContent = sevSub;
+
+    document.getElementById('progressBar').style.width = `${(rated / 10) * 100}%`;
+    document.getElementById('progressText').textContent = `${rated} of 10 rated`;
+
+    // Threshold table highlight
+    ['row_mild','row_mod','row_sev','row_vsev'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+    });
+    const activeRow = total < 8 ? 'row_mild' : total <= 14 ? 'row_mod' : total <= 19 ? 'row_sev' : 'row_vsev';
+    document.getElementById(activeRow).classList.add('active');
+
+    const dotSev = document.getElementById('dot_severity');
+    dotSev.style.background = dotColor;
+
+    let sevText = `Total score ${total}/67 — ${sevLabel}.`;
+    if (total < 8) sevText += ' Monitor without routine pharmacotherapy.';
+    else if (total <= 14) sevText += ' Consider benzodiazepine therapy.';
+    else if (total <= 19) sevText += ' Pharmacotherapy recommended; close nursing observation required.';
+    else sevText += ' URGENT: High risk of withdrawal seizures and delirium tremens. Immediate treatment required.';
+    document.getElementById('text_severity').textContent = sevText;
+
+    const summary = document.getElementById('itemSummary');
+    summary.innerHTML = ITEMS.map((item, idx) => {
+        const s = scores[idx];
+        if (s === null || s === 0) return '';
+        return `<div class="summary-row"><span class="s-name">${item.num}. ${item.name}</span><span class="s-score">${s}/${item.maxScore}</span></div>`;
+    }).join('') || '<div style="font-size:0.8rem;color:#a0aec0;padding:4px 0;">No items scored above 0 yet.</div>';
+}
+
+function resetAll() {
+    if (!confirm('Reset all scores? This cannot be undone.')) return;
+    scores.fill(null);
+    ITEMS.forEach((item, idx) => {
+        const card = document.getElementById(`item-card-${idx}`);
+        card.classList.remove('scored', 'scored-high', 'open');
+        document.getElementById(`score-display-${idx}`).textContent = '—';
+        item.options.forEach(opt => {
+            const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+            if (btn) btn.classList.remove('selected', 'selected-high');
+        });
+    });
+    updateTotals();
+}
+
+function copyResults() {
+    const name = document.getElementById('patientName').value || 'Unknown';
+    const date = document.getElementById('assessDate').value || new Date().toISOString().slice(0,16);
+    const clinician = document.getElementById('clinician').value || 'Unknown';
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+
+    let sevLabel, sevAction;
+    if (total < 8) { sevLabel = 'Mild / Absent'; sevAction = 'Monitor; no routine pharmacotherapy required.'; }
+    else if (total <= 14) { sevLabel = 'Moderate'; sevAction = 'Consider benzodiazepine therapy.'; }
+    else if (total <= 19) { sevLabel = 'Severe'; sevAction = 'Pharmacotherapy recommended; close monitoring.'; }
+    else { sevLabel = 'Very Severe'; sevAction = 'Urgent treatment — high risk of seizures and DTs.'; }
+
+    const itemLines = ITEMS.map((item, idx) => {
+        const s = scores[idx];
+        const val = s !== null ? s : '—';
+        return `  ${item.num}. ${item.name}: ${val}/${item.maxScore}`;
+    }).join('\n');
+
+    const text = `CIWA-Ar — Alcohol Withdrawal Assessment
+Patient: ${name} | Date/Time: ${date} | Clinician: ${clinician}
+
+Total Score: ${total}/67
+Severity: ${sevLabel}
+Action: ${sevAction}
+
+Item Scores:
+${itemLines}
+
+Note: CIWA-Ar should be administered every 4–8 hours. Scores guide but do not replace clinical judgement.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Summary copied to clipboard.');
+    }).catch(() => {
+        prompt('Copy the text below:', text);
+    });
+}
+
+buildItems();
+updateTotals();
+</script>
+</body>
+</html>

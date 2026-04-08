@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANSS – Positive and Negative Syndrome Scale</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #312e81 0%, #6d28d9 100%);
+            color: white;
+            padding: 20px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+        .back-btn:hover { color: white; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #6d28d9;
+        }
+
+        .patient-card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 14px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .patient-grid { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .field-group input {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            color: #1a202c;
+            transition: border-color 0.15s;
+        }
+
+        .field-group input:focus {
+            outline: none;
+            border-color: #6d28d9;
+            box-shadow: 0 0 0 3px rgba(109,40,217,0.12);
+        }
+
+        .score-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .score-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-box .score-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #312e81;
+        }
+
+        .score-box .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .severity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .severity-minimal { background: #c6f6d5; color: #22543d; }
+        .severity-mild { background: #fefcbf; color: #744210; }
+        .severity-moderate { background: #fbd38d; color: #744210; }
+        .severity-mod-severe { background: #fbb6ce; color: #702459; }
+        .severity-severe { background: #fed7d7; color: #742a2a; }
+        .severity-very-severe { background: #e53e3e; color: white; }
+        .severity-none { background: #e2e8f0; color: #4a5568; }
+
+        .instructions {
+            background: #f3e8ff;
+            border: 1px solid #d8b4fe;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #4c1d95;
+            line-height: 1.5;
+        }
+
+        .instructions strong { font-weight: 700; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 12px;
+        }
+
+        .section-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid #e8edf2;
+            overflow: hidden;
+            transition: box-shadow 0.15s;
+        }
+
+        .item-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-card.scored {
+            border-left: 4px solid #6d28d9;
+        }
+
+        .item-card.scored-high {
+            border-left: 4px solid #e53e3e;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .item-num {
+            min-width: 36px;
+            height: 28px;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+            padding: 0 4px;
+        }
+
+        .item-card.scored .item-num {
+            background: #6d28d9;
+            color: white;
+        }
+
+        .item-card.scored-high .item-num {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .item-title-block {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .item-subtitle {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .item-score-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #a0aec0;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-card.scored .item-score-display { color: #6d28d9; }
+        .item-card.scored-high .item-score-display { color: #e53e3e; }
+
+        .item-body {
+            padding: 0 16px 16px 56px;
+            display: none;
+        }
+
+        .item-card.open .item-body { display: block; }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 8px 10px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        .score-options {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        @media (max-width: 560px) {
+            .score-options { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (max-width: 380px) {
+            .score-options { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .score-btn {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 7px 4px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            transition: all 0.12s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .score-btn:hover {
+            border-color: #6d28d9;
+            background: #f3e8ff;
+        }
+
+        .score-btn.selected {
+            border-color: #6d28d9;
+            background: #6d28d9;
+            color: white;
+        }
+
+        .score-btn.selected-high {
+            border-color: #e53e3e;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .score-btn .btn-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-btn .btn-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            opacity: 0.85;
+            line-height: 1.2;
+        }
+
+        .score-btn.selected .btn-label,
+        .score-btn.selected-high .btn-label { opacity: 1; color: white; }
+
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #312e81;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .result-block h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .result-block .big-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #312e81;
+            line-height: 1;
+        }
+
+        .result-block .sub-text {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .interpretation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .interp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .interp-row:last-child { border-bottom: none; }
+
+        .interp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-green { background: #48bb78; }
+        .dot-red { background: #e53e3e; }
+        .dot-yellow { background: #ed8936; }
+        .dot-purple { background: #6d28d9; }
+        .dot-gray { background: #a0aec0; }
+
+        .item-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .summary-section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-top: 8px;
+            margin-bottom: 2px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #4a5568;
+        }
+
+        .summary-row .s-name { flex: 1; }
+        .summary-row .s-score {
+            font-weight: 700;
+            color: #312e81;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #6d28d9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover { background: #312e81; }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover { border-color: #6d28d9; color: #6d28d9; }
+
+        .btn-danger {
+            background: white;
+            color: #e53e3e;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+
+        .progress-bar-wrap {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6d28d9, #48bb78);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        .chevron {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .item-card.open .chevron { transform: rotate(180deg); }
+
+        @media print {
+            body { background: white; }
+            .score-bar { position: static; box-shadow: none; }
+            .action-row { display: none; }
+            header { background: #312e81 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .item-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">← Home</a>
+    <h1>Positive and Negative Syndrome Scale (PANSS)</h1>
+    <p>30-item clinician-administered scale &bull; Scored 1–7 &bull; Minimum: 30 &bull; Maximum: 210</p>
+</header>
+
+<div class="container">
+
+    <div class="patient-card">
+        <h2>Patient Information</h2>
+        <div class="patient-grid">
+            <div class="field-group">
+                <label for="patientName">Patient Name / ID</label>
+                <input type="text" id="patientName" placeholder="Name or identifier">
+            </div>
+            <div class="field-group">
+                <label for="patientDOB">Date of Birth</label>
+                <input type="date" id="patientDOB">
+            </div>
+            <div class="field-group">
+                <label for="assessDate">Assessment Date</label>
+                <input type="date" id="assessDate">
+            </div>
+            <div class="field-group">
+                <label for="clinician">Clinician</label>
+                <input type="text" id="clinician" placeholder="Name / designation">
+            </div>
+        </div>
+    </div>
+
+    <div class="score-bar">
+        <div class="score-group">
+            <div class="score-box">
+                <div class="score-num" id="totalScore">0</div>
+                <div class="score-label">Total / 210</div>
+            </div>
+            <div class="score-box">
+                <div class="score-num" id="posScore">0</div>
+                <div class="score-label">Positive / 49</div>
+            </div>
+            <div class="score-box">
+                <div class="score-num" id="negScore">0</div>
+                <div class="score-label">Negative / 49</div>
+            </div>
+        </div>
+        <span class="severity-badge severity-none" id="severityBadge">Not rated</span>
+        <div style="flex:1;min-width:120px;">
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 30 rated</div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <strong>Instructions:</strong> Rate each item on a 7-point scale from 1 (Absent) to 7 (Extreme), based on interview and reported/observed behaviour in the past week. Minimum score is 30 (all items rated 1).
+    </div>
+
+    <div id="itemsContainer"></div>
+
+    <div class="results-card" id="resultsCard">
+        <h2>Assessment Summary</h2>
+        <div class="results-grid">
+            <div class="result-block">
+                <h3>Total PANSS Score</h3>
+                <div class="big-num" id="r_total">0</div>
+                <div class="sub-text">out of 210 maximum (min 30)</div>
+            </div>
+            <div class="result-block">
+                <h3>Severity</h3>
+                <div class="big-num" id="r_severity" style="font-size:1.5rem;padding-top:4px;">—</div>
+                <div class="sub-text" id="r_severity_range"></div>
+            </div>
+            <div class="result-block">
+                <h3>Positive Subscale (P1–P7)</h3>
+                <div class="big-num" id="r_pos">0</div>
+                <div class="sub-text">out of 49 (min 7)</div>
+            </div>
+            <div class="result-block">
+                <h3>Negative Subscale (N1–N7)</h3>
+                <div class="big-num" id="r_neg">0</div>
+                <div class="sub-text">out of 49 (min 7)</div>
+            </div>
+        </div>
+
+        <div class="result-block" style="margin-bottom:12px;">
+            <h3>General Psychopathology (G1–G16)</h3>
+            <div class="big-num" id="r_gen">0</div>
+            <div class="sub-text">out of 112 (min 16)</div>
+        </div>
+
+        <div class="interpretation-box">
+            <h3>Interpretation</h3>
+            <div class="interp-row">
+                <div class="interp-dot" id="dot_severity"></div>
+                <div id="text_severity">Severity classification will appear once items are rated.</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-purple"></div>
+                <div>PANSS measures positive, negative, and general psychopathology dimensions in schizophrenia.</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>This scale is a clinical aid only. Diagnosis and management require full clinical assessment.</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Item Scores</h3>
+            <div class="item-summary" id="itemSummary"></div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn-secondary" onclick="copyResults()">Copy Summary</button>
+            <button class="btn-danger" onclick="resetAll()">Reset All</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const OPTIONS_7 = [
+    { score: 1, label: "Absent" },
+    { score: 2, label: "Minimal" },
+    { score: 3, label: "Mild" },
+    { score: 4, label: "Moderate" },
+    { score: 5, label: "Mod-Severe" },
+    { score: 6, label: "Severe" },
+    { score: 7, label: "Extreme" }
+];
+
+const ITEMS = [
+    // Positive Subscale
+    { id: "P1", group: "positive", name: "Delusions", subtitle: "Beliefs which are unfounded, unrealistic and idiosyncratic" },
+    { id: "P2", group: "positive", name: "Conceptual Disorganization", subtitle: "Disorganised process of thinking characterised by disruption of goal-directed sequencing" },
+    { id: "P3", group: "positive", name: "Hallucinatory Behaviour", subtitle: "Verbal report or behaviour indicating perceptions which are not generated by external stimuli" },
+    { id: "P4", group: "positive", name: "Excitement", subtitle: "Hyperactivity as reflected in accelerated motor behaviour, heightened responsivity to stimuli, hypervigilance, or excessive labile affect" },
+    { id: "P5", group: "positive", name: "Grandiosity", subtitle: "Exaggerated self-opinion and unrealistic conviction of superiority, including delusions of extraordinary abilities, wealth, knowledge, fame, power or moral righteousness" },
+    { id: "P6", group: "positive", name: "Suspiciousness/Persecution", subtitle: "Unrealistic or exaggerated ideas of persecution, as reflected in guardedness, distrustful attitude, suspicious hypervigilance, or frank delusions" },
+    { id: "P7", group: "positive", name: "Hostility", subtitle: "Verbal and nonverbal expressions of anger and resentment, including sarcasm, passive-aggressive behaviour, verbal abuse and assaultiveness" },
+    // Negative Subscale
+    { id: "N1", group: "negative", name: "Blunted Affect", subtitle: "Diminished emotional responsiveness characterised by a reduction in facial expression, modulation of feelings and communicative gestures" },
+    { id: "N2", group: "negative", name: "Emotional Withdrawal", subtitle: "Lack of interest in, involvement with, and affective commitment to life's events" },
+    { id: "N3", group: "negative", name: "Poor Rapport", subtitle: "Lack of interpersonal empathy, openness in conversation, and sense of closeness, interest or involvement with the interviewer" },
+    { id: "N4", group: "negative", name: "Passive/Apathetic Social Withdrawal", subtitle: "Diminished interest and initiative in social interactions due to passivity, apathy, anergy or avolition" },
+    { id: "N5", group: "negative", name: "Difficulty in Abstract Thinking", subtitle: "Impairment in the use of the abstract-symbolic mode of thinking, as evidenced by difficulty with category concepts, metaphors, and problem-solving" },
+    { id: "N6", group: "negative", name: "Lack of Spontaneity and Flow of Conversation", subtitle: "Reduction in the normal flow of communication associated with apathy, avolition, defensiveness or cognitive deficit" },
+    { id: "N7", group: "negative", name: "Stereotyped Thinking", subtitle: "Decreased fluency, spontaneity and flexibility of thought, as evidenced in rigid, repetitive or barren thought content" },
+    // General Psychopathology
+    { id: "G1", group: "general", name: "Somatic Concern", subtitle: "Physical complaints or beliefs about bodily illness or malfunctions" },
+    { id: "G2", group: "general", name: "Anxiety", subtitle: "Subjective experience of nervousness, worry, apprehension or restlessness" },
+    { id: "G3", group: "general", name: "Guilt Feelings", subtitle: "Sense of remorse or self-blame for real or imagined misdeeds in the past" },
+    { id: "G4", group: "general", name: "Tension", subtitle: "Overt physical manifestations of fear, anxiety and agitation" },
+    { id: "G5", group: "general", name: "Mannerisms and Posturing", subtitle: "Unnatural movements or posture as characterised by an awkward, stilted, disorganised or bizarre appearance" },
+    { id: "G6", group: "general", name: "Depression", subtitle: "Feelings of sadness, discouragement, helplessness and pessimism" },
+    { id: "G7", group: "general", name: "Motor Retardation", subtitle: "Reduction in motor activity as reflected in slowing or lessening of movements and speech" },
+    { id: "G8", group: "general", name: "Uncooperativeness", subtitle: "Active refusal to comply with the will of significant others, including the interviewer, hospital staff or family" },
+    { id: "G9", group: "general", name: "Unusual Thought Content", subtitle: "Thinking characterised by strange, fantastic or bizarre ideation, ranging from those that are remote or atypical to those that are distorted, illogical or clearly absurd" },
+    { id: "G10", group: "general", name: "Disorientation", subtitle: "Lack of awareness of one's relationship to the milieu, including persons, place and time" },
+    { id: "G11", group: "general", name: "Poor Attention", subtitle: "Failure in focused alertness manifested by poor concentration, distractibility and difficulty in directed thought" },
+    { id: "G12", group: "general", name: "Lack of Judgment and Insight", subtitle: "Impaired awareness or understanding of one's own psychiatric condition and life situation" },
+    { id: "G13", group: "general", name: "Disturbance of Volition", subtitle: "Disturbance in the wilful initiation, sustenance and control of one's thoughts, behaviour, movements and speech" },
+    { id: "G14", group: "general", name: "Poor Impulse Control", subtitle: "Disordered regulation and control of action on inner urges resulting in sudden, unmodulated, arbitrary or misdirected discharge of tension and emotions" },
+    { id: "G15", group: "general", name: "Preoccupation", subtitle: "Absorption with internally generated thoughts and feelings and with autistic experiences to the detriment of reality orientation and adaptive behaviour" },
+    { id: "G16", group: "general", name: "Active Social Avoidance", subtitle: "Diminished social involvement associated with unwarranted fear, hostility or distrust" }
+];
+
+const scores = new Array(ITEMS.length).fill(null);
+
+document.getElementById('assessDate').valueAsDate = new Date();
+
+function buildItems() {
+    const container = document.getElementById('itemsContainer');
+    let lastGroup = null;
+
+    ITEMS.forEach((item, idx) => {
+        if (item.group !== lastGroup) {
+            lastGroup = item.group;
+            const hdr = document.createElement('div');
+            hdr.className = 'section-header';
+            if (item.group === 'positive') {
+                hdr.innerHTML = `<h2>Positive Subscale</h2><div class="section-line"></div><span class="section-tag">P1–P7 · Max 49</span>`;
+            } else if (item.group === 'negative') {
+                hdr.innerHTML = `<h2>Negative Subscale</h2><div class="section-line"></div><span class="section-tag">N1–N7 · Max 49</span>`;
+            } else {
+                hdr.innerHTML = `<h2>General Psychopathology</h2><div class="section-line"></div><span class="section-tag">G1–G16 · Max 112</span>`;
+            }
+            container.appendChild(hdr);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `item-card-${idx}`;
+
+        card.innerHTML = `
+            <div class="item-header" onclick="toggleCard(${idx})">
+                <div class="item-num">${item.id}</div>
+                <div class="item-title-block">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-subtitle">${item.subtitle}</div>
+                </div>
+                <div class="item-score-display" id="score-display-${idx}">—</div>
+                <div class="chevron">▼</div>
+            </div>
+            <div class="item-body">
+                <div class="score-options">
+                    ${OPTIONS_7.map(opt => `
+                        <button class="score-btn" id="btn-${idx}-${opt.score}" onclick="setScore(${idx}, ${opt.score})">
+                            <span class="btn-num">${opt.score}</span>
+                            <span class="btn-label">${opt.label}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>`;
+
+        container.appendChild(card);
+    });
+}
+
+function toggleCard(idx) {
+    document.getElementById(`item-card-${idx}`).classList.toggle('open');
+}
+
+function setScore(idx, value) {
+    scores[idx] = value;
+
+    OPTIONS_7.forEach(opt => {
+        const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+        btn.classList.remove('selected', 'selected-high');
+        if (opt.score === value) {
+            btn.classList.add(value >= 6 ? 'selected-high' : 'selected');
+        }
+    });
+
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.remove('scored', 'scored-high');
+    if (value >= 1) {
+        card.classList.add(value >= 6 ? 'scored-high' : 'scored');
+    }
+
+    document.getElementById(`score-display-${idx}`).textContent = value;
+    updateTotals();
+}
+
+function getSeverity(total) {
+    if (total === 0) return { label: 'Not rated', cls: 'severity-none', range: '' };
+    if (total <= 58) return { label: 'Minimal', cls: 'severity-minimal', range: '30–58' };
+    if (total <= 74) return { label: 'Mild', cls: 'severity-mild', range: '59–74' };
+    if (total <= 99) return { label: 'Moderate', cls: 'severity-moderate', range: '75–99' };
+    if (total <= 119) return { label: 'Moderately Severe', cls: 'severity-mod-severe', range: '100–119' };
+    if (total <= 149) return { label: 'Severe', cls: 'severity-severe', range: '120–149' };
+    return { label: 'Very Severe', cls: 'severity-very-severe', range: '≥150' };
+}
+
+function updateTotals() {
+    const rated = scores.filter(s => s !== null).length;
+    const posScores = scores.slice(0, 7);
+    const negScores = scores.slice(7, 14);
+    const genScores = scores.slice(14, 30);
+
+    const posTotal = posScores.reduce((a, s) => a + (s ?? 0), 0);
+    const negTotal = negScores.reduce((a, s) => a + (s ?? 0), 0);
+    const genTotal = genScores.reduce((a, s) => a + (s ?? 0), 0);
+    const total = posTotal + negTotal + genTotal;
+
+    document.getElementById('totalScore').textContent = total;
+    document.getElementById('posScore').textContent = posTotal;
+    document.getElementById('negScore').textContent = negTotal;
+
+    const sev = getSeverity(total);
+    const sevBadge = document.getElementById('severityBadge');
+    sevBadge.className = 'severity-badge ' + sev.cls;
+    sevBadge.textContent = sev.label;
+
+    document.getElementById('progressBar').style.width = `${(rated / 30) * 100}%`;
+    document.getElementById('progressText').textContent = `${rated} of 30 rated`;
+
+    document.getElementById('r_total').textContent = total;
+    document.getElementById('r_pos').textContent = posTotal;
+    document.getElementById('r_neg').textContent = negTotal;
+    document.getElementById('r_gen').textContent = genTotal;
+    document.getElementById('r_severity').textContent = sev.label;
+    document.getElementById('r_severity_range').textContent = sev.range ? `Score range: ${sev.range}` : '';
+
+    const dotSev = document.getElementById('dot_severity');
+    const textSev = document.getElementById('text_severity');
+    if (total === 0) {
+        dotSev.style.background = '#a0aec0';
+        textSev.textContent = 'Severity classification will appear once items are rated.';
+    } else {
+        const dotColors = { 'severity-minimal': '#48bb78', 'severity-mild': '#ecc94b', 'severity-moderate': '#ed8936', 'severity-mod-severe': '#e9567b', 'severity-severe': '#e53e3e', 'severity-very-severe': '#9b2335' };
+        dotSev.style.background = dotColors[sev.cls] || '#a0aec0';
+        textSev.textContent = `Total score ${total}/210 — ${sev.label}${sev.range ? ' (range ' + sev.range + ')' : ''}. Positive: ${posTotal}/49, Negative: ${negTotal}/49, General: ${genTotal}/112.`;
+    }
+
+    const summary = document.getElementById('itemSummary');
+    const groups = [
+        { label: 'Positive Subscale (P1–P7)', indices: [0,6] },
+        { label: 'Negative Subscale (N1–N7)', indices: [7,13] },
+        { label: 'General Psychopathology (G1–G16)', indices: [14,29] }
+    ];
+
+    let html = '';
+    groups.forEach(g => {
+        const items = ITEMS.slice(g.indices[0], g.indices[1] + 1);
+        const anyScored = items.some((_, i) => scores[g.indices[0] + i] !== null);
+        if (anyScored) {
+            html += `<div class="summary-section-label">${g.label}</div>`;
+            items.forEach((item, i) => {
+                const s = scores[g.indices[0] + i];
+                if (s !== null) {
+                    html += `<div class="summary-row"><span class="s-name">${item.id}. ${item.name}</span><span class="s-score">${s}</span></div>`;
+                }
+            });
+        }
+    });
+
+    summary.innerHTML = html || '<div style="font-size:0.8rem;color:#a0aec0;padding:4px 0;">No items rated yet.</div>';
+}
+
+function resetAll() {
+    if (!confirm('Reset all scores? This cannot be undone.')) return;
+    scores.fill(null);
+    ITEMS.forEach((_, idx) => {
+        const card = document.getElementById(`item-card-${idx}`);
+        card.classList.remove('scored', 'scored-high', 'open');
+        document.getElementById(`score-display-${idx}`).textContent = '—';
+        OPTIONS_7.forEach(opt => {
+            const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+            if (btn) btn.classList.remove('selected', 'selected-high');
+        });
+    });
+    updateTotals();
+}
+
+function copyResults() {
+    const name = document.getElementById('patientName').value || 'Unknown';
+    const date = document.getElementById('assessDate').value || new Date().toISOString().slice(0,10);
+    const clinician = document.getElementById('clinician').value || 'Unknown';
+
+    const posTotal = scores.slice(0,7).reduce((a,s) => a+(s??0), 0);
+    const negTotal = scores.slice(7,14).reduce((a,s) => a+(s??0), 0);
+    const genTotal = scores.slice(14,30).reduce((a,s) => a+(s??0), 0);
+    const total = posTotal + negTotal + genTotal;
+    const sev = getSeverity(total);
+
+    const positiveItems = ITEMS
+        .map((item, idx) => ({ item, score: scores[idx] }))
+        .filter(({ score }) => score !== null)
+        .map(({ item, score }) => `  ${item.id}. ${item.name}: ${score}/7`)
+        .join('\n');
+
+    const text = `Positive and Negative Syndrome Scale (PANSS)
+Patient: ${name} | Date: ${date} | Clinician: ${clinician}
+
+Total Score: ${total}/210 (${sev.label})
+Positive Subscale (P1–P7): ${posTotal}/49
+Negative Subscale (N1–N7): ${negTotal}/49
+General Psychopathology (G1–G16): ${genTotal}/112
+
+Item Scores:
+${positiveItems || '  None rated'}
+
+Note: This is a clinical rating scale and should be interpreted in conjunction with full clinical assessment.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Summary copied to clipboard.');
+    }).catch(() => {
+        prompt('Copy the text below:', text);
+    });
+}
+
+buildItems();
+updateTotals();
+</script>
+</body>
+</html>

@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDIT — Alcohol Use Disorders Identification Test</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #7c2d12 0%, #c2410c 100%);
+            color: white;
+            padding: 20px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .back-btn {
+            display: inline-block;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+        .back-btn:hover { color: white; }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #c2410c;
+        }
+
+        .patient-card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 14px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .patient-grid { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .field-group input, .field-group select {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            color: #1a202c;
+            transition: border-color 0.15s;
+            background: white;
+        }
+
+        .field-group input:focus, .field-group select:focus {
+            outline: none;
+            border-color: #c2410c;
+            box-shadow: 0 0 0 3px rgba(194,65,12,0.12);
+        }
+
+        .score-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .score-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-box .score-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #7c2d12;
+        }
+
+        .score-box .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .severity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .risk-low { background: #c6f6d5; color: #22543d; }
+        .risk-hazardous { background: #fefcbf; color: #744210; }
+        .risk-harmful { background: #fbd38d; color: #744210; }
+        .risk-dependent { background: #fed7d7; color: #742a2a; }
+
+        .instructions {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #7c2d12;
+            line-height: 1.5;
+        }
+
+        .instructions strong { font-weight: 700; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 12px;
+        }
+
+        .section-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            color: #718096;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid #e8edf2;
+            overflow: hidden;
+            transition: box-shadow 0.15s;
+        }
+
+        .item-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-card.scored {
+            border-left: 4px solid #c2410c;
+        }
+
+        .item-card.scored-high {
+            border-left: 4px solid #e53e3e;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .item-num {
+            min-width: 28px;
+            height: 28px;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .item-card.scored .item-num {
+            background: #c2410c;
+            color: white;
+        }
+
+        .item-card.scored-high .item-num {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .item-title-block {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .item-subtitle {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .item-score-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #a0aec0;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-card.scored .item-score-display { color: #c2410c; }
+        .item-card.scored-high .item-score-display { color: #e53e3e; }
+
+        .item-body {
+            padding: 0 16px 16px 56px;
+            display: none;
+        }
+
+        .item-card.open .item-body { display: block; }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 8px 10px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        .score-options {
+            display: grid;
+            gap: 6px;
+        }
+
+        .score-options-5 { grid-template-columns: repeat(5, 1fr); }
+        .score-options-3 { grid-template-columns: repeat(3, 1fr); }
+
+        @media (max-width: 500px) {
+            .score-options-5, .score-options-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .score-btn {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            transition: all 0.12s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .score-btn:hover {
+            border-color: #c2410c;
+            background: #fff7ed;
+        }
+
+        .score-btn.selected {
+            border-color: #c2410c;
+            background: #c2410c;
+            color: white;
+        }
+
+        .score-btn.selected-high {
+            border-color: #e53e3e;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .score-btn .btn-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-btn .btn-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            opacity: 0.85;
+        }
+
+        .score-btn .btn-desc {
+            font-size: 0.65rem;
+            color: #718096;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .score-btn.selected .btn-desc,
+        .score-btn.selected-high .btn-desc { color: rgba(255,255,255,0.8); }
+
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #7c2d12;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .result-block h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .result-block .big-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #7c2d12;
+            line-height: 1;
+        }
+
+        .result-block .sub-text {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .interpretation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .interp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .interp-row:last-child { border-bottom: none; }
+
+        .interp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-green { background: #48bb78; }
+        .dot-red { background: #e53e3e; }
+        .dot-yellow { background: #ed8936; }
+
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.83rem;
+        }
+
+        .risk-table th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #718096;
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .risk-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #f0f4f8;
+        }
+
+        .risk-table tr.active td {
+            font-weight: 700;
+            background: #fff7ed;
+        }
+
+        .item-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #4a5568;
+        }
+
+        .summary-row .s-name { flex: 1; }
+        .summary-row .s-score {
+            font-weight: 700;
+            color: #7c2d12;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #c2410c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover { background: #7c2d12; }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover { border-color: #c2410c; color: #c2410c; }
+
+        .btn-danger {
+            background: white;
+            color: #e53e3e;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+
+        .progress-bar-wrap {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c2410c, #fb923c);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        .chevron {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .item-card.open .chevron { transform: rotate(180deg); }
+
+        @media print {
+            body { background: white; }
+            .score-bar { position: static; box-shadow: none; }
+            .action-row { display: none; }
+            header { background: #7c2d12 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .item-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">← Home</a>
+    <h1>Alcohol Use Disorders Identification Test (AUDIT)</h1>
+    <p>10-item self-report screening tool &bull; Max score: 40</p>
+</header>
+
+<div class="container">
+
+    <!-- Patient Info -->
+    <div class="patient-card">
+        <h2>Patient Information</h2>
+        <div class="patient-grid">
+            <div class="field-group">
+                <label for="patientName">Patient Name / ID</label>
+                <input type="text" id="patientName" placeholder="Name or identifier">
+            </div>
+            <div class="field-group">
+                <label for="patientDOB">Date of Birth</label>
+                <input type="date" id="patientDOB">
+            </div>
+            <div class="field-group">
+                <label for="assessDate">Assessment Date</label>
+                <input type="date" id="assessDate">
+            </div>
+            <div class="field-group">
+                <label for="clinician">Clinician</label>
+                <input type="text" id="clinician" placeholder="Name / designation">
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky score bar -->
+    <div class="score-bar">
+        <div class="score-group">
+            <div class="score-box">
+                <div class="score-num" id="totalScore">0</div>
+                <div class="score-label">Total Score / 40</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span class="severity-badge risk-low" id="riskBadge">Low Risk</span>
+        </div>
+        <div style="flex:1;min-width:120px;">
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 10 rated</div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <strong>Instructions:</strong> The following questions are about your use of alcoholic beverages during the past year. Alcoholic beverages include beer, wine, spirits, and other drinks containing alcohol. Note: Items 9 and 10 have only three response options (scored 0, 2, or 4).
+    </div>
+
+    <!-- Items rendered by JS -->
+    <div id="itemsContainer"></div>
+
+    <!-- Results -->
+    <div class="results-card" id="resultsCard">
+        <h2>Assessment Summary</h2>
+        <div class="results-grid">
+            <div class="result-block">
+                <h3>Total AUDIT Score</h3>
+                <div class="big-num" id="r_total">0</div>
+                <div class="sub-text">out of 40 maximum</div>
+            </div>
+            <div class="result-block">
+                <h3>Risk Level</h3>
+                <div class="big-num" id="r_risk" style="font-size:1.2rem;padding-top:4px;">Low Risk</div>
+                <div class="sub-text" id="r_risk_sub">Score 0–7</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box">
+            <h3>Risk Zones</h3>
+            <table class="risk-table" id="riskTable">
+                <thead><tr><th>Score</th><th>Risk Level</th><th>Recommended Action</th></tr></thead>
+                <tbody>
+                    <tr id="row_low"><td>0–7</td><td>Low Risk</td><td>Education and reassurance</td></tr>
+                    <tr id="row_hazard"><td>8–15</td><td>Hazardous Drinking</td><td>Brief advice recommended</td></tr>
+                    <tr id="row_harmful"><td>16–19</td><td>Harmful Drinking</td><td>Brief counselling and monitoring</td></tr>
+                    <tr id="row_depend"><td>20–40</td><td>Possible Alcohol Dependence</td><td>Referral to specialist for assessment</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Interpretation</h3>
+            <div class="interp-row">
+                <div class="interp-dot" id="dot_risk"></div>
+                <div id="text_risk">Risk classification will appear here.</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>AUDIT is a screening tool only. Scores should be interpreted in the context of a full clinical assessment. A score ≥8 warrants further evaluation.</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Item Scores (non-zero)</h3>
+            <div class="item-summary" id="itemSummary"></div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn-secondary" onclick="copyResults()">Copy Summary</button>
+            <button class="btn-danger" onclick="resetAll()">Reset All</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const ITEMS = [
+    {
+        num: 1,
+        name: "Drinking frequency",
+        subtitle: "Past year — how often",
+        desc: "How often do you have a drink containing alcohol?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "Monthly or less", desc: "" },
+            { score: 2, label: "2–4×/month", desc: "" },
+            { score: 3, label: "2–3×/week", desc: "" },
+            { score: 4, label: "≥4×/week", desc: "" }
+        ]
+    },
+    {
+        num: 2,
+        name: "Drinks per occasion",
+        subtitle: "Typical day when drinking",
+        desc: "How many standard drinks containing alcohol do you have on a typical day when you are drinking?",
+        options: [
+            { score: 0, label: "1–2", desc: "" },
+            { score: 1, label: "3–4", desc: "" },
+            { score: 2, label: "5–6", desc: "" },
+            { score: 3, label: "7–9", desc: "" },
+            { score: 4, label: "10 or more", desc: "" }
+        ]
+    },
+    {
+        num: 3,
+        name: "Heavy drinking occasions",
+        subtitle: "6 or more drinks on one occasion",
+        desc: "How often do you have 6 or more drinks on one occasion?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "< Monthly", desc: "" },
+            { score: 2, label: "Monthly", desc: "" },
+            { score: 3, label: "Weekly", desc: "" },
+            { score: 4, label: "Daily/almost daily", desc: "" }
+        ]
+    },
+    {
+        num: 4,
+        name: "Loss of control",
+        subtitle: "Unable to stop once started",
+        desc: "How often during the last year have you found that you were not able to stop drinking once you had started?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "< Monthly", desc: "" },
+            { score: 2, label: "Monthly", desc: "" },
+            { score: 3, label: "Weekly", desc: "" },
+            { score: 4, label: "Daily/almost daily", desc: "" }
+        ]
+    },
+    {
+        num: 5,
+        name: "Failed expectations",
+        subtitle: "Failed to do what was expected",
+        desc: "How often during the last year have you failed to do what was normally expected of you because of drinking?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "< Monthly", desc: "" },
+            { score: 2, label: "Monthly", desc: "" },
+            { score: 3, label: "Weekly", desc: "" },
+            { score: 4, label: "Daily/almost daily", desc: "" }
+        ]
+    },
+    {
+        num: 6,
+        name: "Morning drinking",
+        subtitle: "Needed a first drink in the morning",
+        desc: "How often during the last year have you needed a first drink in the morning to get yourself going after a heavy drinking session?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "< Monthly", desc: "" },
+            { score: 2, label: "Monthly", desc: "" },
+            { score: 3, label: "Weekly", desc: "" },
+            { score: 4, label: "Daily/almost daily", desc: "" }
+        ]
+    },
+    {
+        num: 7,
+        name: "Guilt / remorse",
+        subtitle: "Feeling of guilt after drinking",
+        desc: "How often during the last year have you had a feeling of guilt or remorse after drinking?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "< Monthly", desc: "" },
+            { score: 2, label: "Monthly", desc: "" },
+            { score: 3, label: "Weekly", desc: "" },
+            { score: 4, label: "Daily/almost daily", desc: "" }
+        ]
+    },
+    {
+        num: 8,
+        name: "Blackouts",
+        subtitle: "Unable to remember night before",
+        desc: "How often during the last year have you been unable to remember what happened the night before because you had been drinking?",
+        options: [
+            { score: 0, label: "Never", desc: "" },
+            { score: 1, label: "< Monthly", desc: "" },
+            { score: 2, label: "Monthly", desc: "" },
+            { score: 3, label: "Weekly", desc: "" },
+            { score: 4, label: "Daily/almost daily", desc: "" }
+        ]
+    },
+    {
+        num: 9,
+        name: "Injury due to drinking",
+        subtitle: "Self or others injured — scored 0/2/4",
+        desc: "Have you or someone else been injured as a result of your drinking?",
+        options: [
+            { score: 0, label: "No", desc: "" },
+            { score: 2, label: "Yes, but not in last year", desc: "" },
+            { score: 4, label: "Yes, last year", desc: "" }
+        ],
+        threeOption: true
+    },
+    {
+        num: 10,
+        name: "Concern from others",
+        subtitle: "Health worker suggested cut down — scored 0/2/4",
+        desc: "Has a relative, friend, doctor, or other health worker been concerned about your drinking or suggested you cut down?",
+        options: [
+            { score: 0, label: "No", desc: "" },
+            { score: 2, label: "Yes, but not in last year", desc: "" },
+            { score: 4, label: "Yes, last year", desc: "" }
+        ],
+        threeOption: true
+    }
+];
+
+const scores = new Array(10).fill(null);
+
+document.getElementById('assessDate').valueAsDate = new Date();
+
+const SECTION_HEADERS = {
+    1: { title: "Alcohol Consumption (Items 1–3)", tag: "Frequency & Amount" },
+    4: { title: "Alcohol Dependence Symptoms (Items 4–6)", tag: "Control & Dependence" },
+    7: { title: "Harmful Alcohol Use (Items 7–10)", tag: "Consequences" }
+};
+
+function buildItems() {
+    const container = document.getElementById('itemsContainer');
+
+    ITEMS.forEach((item, idx) => {
+        const hdr = SECTION_HEADERS[item.num];
+        if (hdr) {
+            const el = document.createElement('div');
+            el.className = 'section-header';
+            el.innerHTML = `<h2>${hdr.title}</h2><div class="section-line"></div><span class="section-tag">${hdr.tag}</span>`;
+            container.appendChild(el);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `item-card-${idx}`;
+
+        const gridClass = item.threeOption ? 'score-options score-options-3' : 'score-options score-options-5';
+
+        card.innerHTML = `
+            <div class="item-header" onclick="toggleCard(${idx})">
+                <div class="item-num">${item.num}</div>
+                <div class="item-title-block">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-subtitle">${item.subtitle}</div>
+                </div>
+                <div class="item-score-display" id="score-display-${idx}">—</div>
+                <div class="chevron">▼</div>
+            </div>
+            <div class="item-body">
+                <div class="item-desc">${item.desc}</div>
+                <div class="${gridClass}">
+                    ${item.options.map(opt => `
+                        <button class="score-btn" id="btn-${idx}-${opt.score}" onclick="setScore(${idx}, ${opt.score})">
+                            <span class="btn-num">${opt.score}</span>
+                            <span class="btn-label">${opt.label}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>`;
+
+        container.appendChild(card);
+    });
+}
+
+function toggleCard(idx) {
+    document.getElementById(`item-card-${idx}`).classList.toggle('open');
+}
+
+function setScore(idx, value) {
+    scores[idx] = value;
+
+    ITEMS[idx].options.forEach(opt => {
+        const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+        btn.classList.remove('selected', 'selected-high');
+        if (opt.score === value) {
+            btn.classList.add(value >= 3 ? 'selected-high' : 'selected');
+        }
+    });
+
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.remove('scored', 'scored-high');
+    if (value > 0) card.classList.add(value >= 3 ? 'scored-high' : 'scored');
+
+    document.getElementById(`score-display-${idx}`).textContent = value;
+    updateTotals();
+}
+
+function updateTotals() {
+    const rated = scores.filter(s => s !== null).length;
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+
+    document.getElementById('totalScore').textContent = total;
+    document.getElementById('r_total').textContent = total;
+
+    let riskLabel, riskClass, riskSub, riskAction, dotColor;
+    if (total <= 7) {
+        riskLabel = 'Low Risk'; riskClass = 'risk-low'; riskSub = 'Score 0–7';
+        riskAction = 'Education and reassurance.'; dotColor = '#48bb78';
+    } else if (total <= 15) {
+        riskLabel = 'Hazardous Drinking'; riskClass = 'risk-hazardous'; riskSub = 'Score 8–15';
+        riskAction = 'Brief advice recommended.'; dotColor = '#ecc94b';
+    } else if (total <= 19) {
+        riskLabel = 'Harmful Drinking'; riskClass = 'risk-harmful'; riskSub = 'Score 16–19';
+        riskAction = 'Brief counselling and monitoring.'; dotColor = '#ed8936';
+    } else {
+        riskLabel = 'Possible Dependence'; riskClass = 'risk-dependent'; riskSub = 'Score 20–40';
+        riskAction = 'Referral to specialist for assessment.'; dotColor = '#e53e3e';
+    }
+
+    const riskBadge = document.getElementById('riskBadge');
+    riskBadge.className = 'severity-badge ' + riskClass;
+    riskBadge.textContent = riskLabel;
+
+    document.getElementById('r_risk').textContent = riskLabel;
+    document.getElementById('r_risk_sub').textContent = riskSub;
+
+    document.getElementById('progressBar').style.width = `${(rated / 10) * 100}%`;
+    document.getElementById('progressText').textContent = `${rated} of 10 rated`;
+
+    // Risk table highlight
+    ['row_low','row_hazard','row_harmful','row_depend'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+    });
+    const activeRow = total <= 7 ? 'row_low' : total <= 15 ? 'row_hazard' : total <= 19 ? 'row_harmful' : 'row_depend';
+    document.getElementById(activeRow).classList.add('active');
+
+    const dotRisk = document.getElementById('dot_risk');
+    dotRisk.style.background = dotColor;
+    document.getElementById('text_risk').textContent = `Total score ${total}/40 — ${riskLabel}. ${riskAction}`;
+
+    const summary = document.getElementById('itemSummary');
+    summary.innerHTML = ITEMS.map((item, idx) => {
+        const s = scores[idx];
+        if (s === null || s === 0) return '';
+        return `<div class="summary-row"><span class="s-name">${item.num}. ${item.name}</span><span class="s-score">${s}</span></div>`;
+    }).join('') || '<div style="font-size:0.8rem;color:#a0aec0;padding:4px 0;">No items scored above 0 yet.</div>';
+}
+
+function resetAll() {
+    if (!confirm('Reset all scores? This cannot be undone.')) return;
+    scores.fill(null);
+    ITEMS.forEach((item, idx) => {
+        const card = document.getElementById(`item-card-${idx}`);
+        card.classList.remove('scored', 'scored-high', 'open');
+        document.getElementById(`score-display-${idx}`).textContent = '—';
+        item.options.forEach(opt => {
+            const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+            if (btn) btn.classList.remove('selected', 'selected-high');
+        });
+    });
+    updateTotals();
+}
+
+function copyResults() {
+    const name = document.getElementById('patientName').value || 'Unknown';
+    const date = document.getElementById('assessDate').value || new Date().toISOString().slice(0,10);
+    const clinician = document.getElementById('clinician').value || 'Unknown';
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+
+    let riskLabel, riskAction;
+    if (total <= 7) { riskLabel = 'Low Risk'; riskAction = 'Education and reassurance.'; }
+    else if (total <= 15) { riskLabel = 'Hazardous Drinking'; riskAction = 'Brief advice recommended.'; }
+    else if (total <= 19) { riskLabel = 'Harmful Drinking'; riskAction = 'Brief counselling and monitoring.'; }
+    else { riskLabel = 'Possible Alcohol Dependence'; riskAction = 'Referral to specialist for assessment.'; }
+
+    const positiveItems = ITEMS.map((item, idx) => ({ item, score: scores[idx] }))
+        .filter(({ score }) => score !== null && score > 0)
+        .map(({ item, score }) => `  • ${item.num}. ${item.name}: ${score}`)
+        .join('\n');
+
+    const text = `Alcohol Use Disorders Identification Test (AUDIT)
+Patient: ${name} | Date: ${date} | Clinician: ${clinician}
+
+Total Score: ${total}/40
+Risk Level: ${riskLabel}
+Recommended Action: ${riskAction}
+
+Items Scored >0:
+${positiveItems || '  None'}
+
+Note: AUDIT is a screening tool. A score ≥8 warrants further clinical evaluation.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Summary copied to clipboard.');
+    }).catch(() => {
+        prompt('Copy the text below:', text);
+    });
+}
+
+buildItems();
+updateTotals();
+</script>
+</body>
+</html>

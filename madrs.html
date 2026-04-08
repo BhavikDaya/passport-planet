@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montgomery-Åsberg Depression Rating Scale (MADRS)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
+            color: white;
+            padding: 20px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .back-btn {
+            display: inline-block;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+        .back-btn:hover { color: white; }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #2d6a9f;
+        }
+
+        .patient-card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 14px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .patient-grid { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .field-group input {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            color: #1a202c;
+            transition: border-color 0.15s;
+        }
+
+        .field-group input:focus {
+            outline: none;
+            border-color: #2d6a9f;
+            box-shadow: 0 0 0 3px rgba(45,106,159,0.12);
+        }
+
+        .score-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .score-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-box .score-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #1e3a5f;
+        }
+
+        .score-box .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .severity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .severity-none { background: #c6f6d5; color: #22543d; }
+        .severity-mild { background: #fefcbf; color: #744210; }
+        .severity-moderate { background: #fbd38d; color: #744210; }
+        .severity-severe { background: #fed7d7; color: #742a2a; }
+
+        .instructions {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #2c5282;
+            line-height: 1.5;
+        }
+
+        .instructions strong { font-weight: 700; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 12px;
+        }
+
+        .section-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4a5568;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            color: #718096;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid #e8edf2;
+            overflow: hidden;
+            transition: box-shadow 0.15s;
+        }
+
+        .item-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-card.scored {
+            border-left: 4px solid #2d6a9f;
+        }
+
+        .item-card.scored-high {
+            border-left: 4px solid #e53e3e;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            cursor: pointer;
+            gap: 12px;
+        }
+
+        .item-num {
+            min-width: 28px;
+            height: 28px;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .item-card.scored .item-num {
+            background: #2d6a9f;
+            color: white;
+        }
+
+        .item-card.scored-high .item-num {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .item-title-block {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .item-subtitle {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .item-score-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #a0aec0;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-card.scored .item-score-display { color: #2d6a9f; }
+        .item-card.scored-high .item-score-display { color: #e53e3e; }
+
+        .item-body {
+            padding: 0 16px 16px 56px;
+            display: none;
+        }
+
+        .item-card.open .item-body { display: block; }
+
+        .anchor-note {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .score-options {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .score-options { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (max-width: 380px) {
+            .score-options { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .score-btn {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 4px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            transition: all 0.12s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .score-btn.anchor-btn {
+            border-color: #cbd5e0;
+            background: #f7fafc;
+        }
+
+        .score-btn:hover {
+            border-color: #2d6a9f;
+            background: #ebf8ff;
+        }
+
+        .score-btn.selected {
+            border-color: #2d6a9f;
+            background: #2d6a9f;
+            color: white;
+        }
+
+        .score-btn.selected-high {
+            border-color: #e53e3e;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .score-btn .btn-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-btn .btn-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            opacity: 0.85;
+            line-height: 1.2;
+        }
+
+        .score-btn .btn-desc {
+            font-size: 0.6rem;
+            color: #718096;
+            line-height: 1.2;
+            margin-top: 1px;
+        }
+
+        .score-btn.selected .btn-desc,
+        .score-btn.selected-high .btn-desc { color: rgba(255,255,255,0.8); }
+
+        .chevron {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .item-card.open .chevron { transform: rotate(180deg); }
+
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .result-block h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .result-block .big-num {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #1e3a5f;
+            line-height: 1;
+        }
+
+        .result-block .sub-text {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .interpretation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .interp-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .interp-row:last-child { border-bottom: none; }
+
+        .interp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-green { background: #48bb78; }
+        .dot-red { background: #e53e3e; }
+        .dot-yellow { background: #ed8936; }
+
+        .flag-box {
+            background: #fff5f5;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.88rem;
+            color: #742a2a;
+            font-weight: 600;
+            display: none;
+        }
+
+        .item-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #4a5568;
+        }
+
+        .summary-row .s-name { flex: 1; }
+        .summary-row .s-score {
+            font-weight: 700;
+            color: #1e3a5f;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #2d6a9f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover { background: #1e3a5f; }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover { border-color: #2d6a9f; color: #2d6a9f; }
+
+        .btn-danger {
+            background: white;
+            color: #e53e3e;
+            border: 1.5px solid #fed7d7;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+
+        .progress-bar-wrap {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2d6a9f, #48bb78);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        @media print {
+            body { background: white; }
+            .score-bar { position: static; box-shadow: none; }
+            .action-row { display: none; }
+            header { background: #1e3a5f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .item-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">← Home</a>
+    <h1>Montgomery-&Aring;sberg Depression Rating Scale (MADRS)</h1>
+    <p>10-item clinician-administered scale &bull; Max score: 60</p>
+</header>
+
+<div class="container">
+
+    <div class="patient-card">
+        <h2>Patient Information</h2>
+        <div class="patient-grid">
+            <div class="field-group">
+                <label for="patientName">Patient Name / ID</label>
+                <input type="text" id="patientName" placeholder="Name or identifier">
+            </div>
+            <div class="field-group">
+                <label for="patientDOB">Date of Birth</label>
+                <input type="date" id="patientDOB">
+            </div>
+            <div class="field-group">
+                <label for="assessDate">Assessment Date</label>
+                <input type="date" id="assessDate">
+            </div>
+            <div class="field-group">
+                <label for="clinician">Clinician</label>
+                <input type="text" id="clinician" placeholder="Name / designation">
+            </div>
+        </div>
+    </div>
+
+    <div class="score-bar">
+        <div class="score-group">
+            <div class="score-box">
+                <div class="score-num" id="totalScore">0</div>
+                <div class="score-label">Total Score / 60</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span class="severity-badge severity-none" id="severityBadge">No/Absent</span>
+        </div>
+        <div style="flex:1;min-width:120px;">
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 10 rated</div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <strong>Instructions:</strong> Rate each item using the full 0–6 scale. Anchor points are given at 0, 2, 4, and 6; use 1, 3, and 5 for intermediate values. Tap an item to expand it and select a score.
+    </div>
+
+    <div id="itemsContainer"></div>
+
+    <div class="results-card" id="resultsCard">
+        <h2>Assessment Summary</h2>
+        <div class="results-grid">
+            <div class="result-block">
+                <h3>Total MADRS Score</h3>
+                <div class="big-num" id="r_total">0</div>
+                <div class="sub-text">out of 60 maximum</div>
+            </div>
+            <div class="result-block">
+                <h3>Severity</h3>
+                <div class="big-num" id="r_severity" style="font-size:1.4rem;padding-top:4px;">No/Absent</div>
+                <div class="sub-text" id="r_severity_range">Score 0–6</div>
+            </div>
+        </div>
+
+        <div class="flag-box" id="siFlag">
+            &#9888; Significant suicidal ideation — assess immediately.
+        </div>
+
+        <div class="interpretation-box">
+            <h3>Severity Guide</h3>
+            <div class="interp-row">
+                <div class="interp-dot dot-green"></div>
+                <div>0–6: No depression / symptoms absent</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot" style="background:#ecc94b;"></div>
+                <div>7–19: Mild depression</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>20–34: Moderate depression</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-red"></div>
+                <div>35–60: Severe depression</div>
+            </div>
+            <div class="interp-row">
+                <div class="interp-dot dot-yellow"></div>
+                <div>This scale is a clinical aid only. Diagnosis and management require full clinical assessment.</div>
+            </div>
+        </div>
+
+        <div class="interpretation-box" style="margin-top:10px;">
+            <h3>Item Scores</h3>
+            <div class="item-summary" id="itemSummary"></div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+            <button class="btn-secondary" onclick="copyResults()">Copy Summary</button>
+            <button class="btn-danger" onclick="resetAll()">Reset All</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Build options for each MADRS item: 0–6 with anchors at even, intermediate at odd
+function buildOptions(anchors) {
+    // anchors: object with keys 0,2,4,6 => {label, desc}
+    const opts = [];
+    for (let i = 0; i <= 6; i++) {
+        if (i % 2 === 0) {
+            opts.push({ score: i, label: anchors[i].label, desc: anchors[i].desc, isAnchor: true });
+        } else {
+            opts.push({ score: i, label: 'Intermediate', desc: '(between adjacent anchors)', isAnchor: false });
+        }
+    }
+    return opts;
+}
+
+const ITEMS = [
+    {
+        num: 1,
+        name: "Apparent Sadness",
+        subtitle: "Observed sadness in face, posture, voice",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "No sadness", desc: "No sadness" },
+            2: { label: "Brightens up", desc: "Looks dispirited but brightens without difficulty" },
+            4: { label: "Sad most of time", desc: "Appears sad and unhappy most of the time" },
+            6: { label: "Miserable all time", desc: "Looks miserable all the time; extremely despondent" }
+        })
+    },
+    {
+        num: 2,
+        name: "Reported Sadness",
+        subtitle: "Subjectively reported depressed mood",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "Occasional", desc: "Occasional sadness in keeping with circumstances" },
+            2: { label: "Brightens up", desc: "Sad or low-spirited but brightens up without difficulty" },
+            4: { label: "Pervasive", desc: "Pervasive feelings of sadness or gloominess; mood still influenced by external circumstances" },
+            6: { label: "Continuous", desc: "Continuous or unvarying sadness, misery, or despondency" }
+        })
+    },
+    {
+        num: 3,
+        name: "Inner Tension",
+        subtitle: "Feelings of edginess, anxiety, or panic",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "Placid", desc: "Placid; only fleeting inner tension" },
+            2: { label: "Occasional", desc: "Occasional feelings of edginess and ill-defined discomfort" },
+            4: { label: "Continuous tension", desc: "Continuous feelings of inner tension or intermittent panic which the patient can only master with some difficulty" },
+            6: { label: "Dread / panic", desc: "Unrelenting dread or anguish; overwhelming panic" }
+        })
+    },
+    {
+        num: 4,
+        name: "Reduced Sleep",
+        subtitle: "Difficulty with sleep duration or quality",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "As usual", desc: "Sleeps as usual" },
+            2: { label: "Slight difficulty", desc: "Slight difficulty dropping off or slightly reduced/superficial or disturbed sleep" },
+            4: { label: "Reduced ≥2h", desc: "Sleep reduced or broken by at least 2 hours" },
+            6: { label: "< 2–3 hours", desc: "Less than 2–3 hours sleep" }
+        })
+    },
+    {
+        num: 5,
+        name: "Reduced Appetite",
+        subtitle: "Loss of appetite or food aversion",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "Normal", desc: "Normal or increased appetite" },
+            2: { label: "Slightly reduced", desc: "Slightly reduced appetite" },
+            4: { label: "No appetite", desc: "No appetite; food is tasteless" },
+            6: { label: "Needs persuasion", desc: "Needs persuasion to eat at all" }
+        })
+    },
+    {
+        num: 6,
+        name: "Concentration Difficulties",
+        subtitle: "Difficulty collecting thoughts or sustaining attention",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "No difficulty", desc: "No difficulties in concentrating" },
+            2: { label: "Occasional", desc: "Occasional difficulties in collecting thoughts" },
+            4: { label: "Reduced ability", desc: "Difficulties in concentrating and sustaining thought which reduces ability to read or hold a conversation" },
+            6: { label: "Unable to read", desc: "Unable to read or converse without great difficulty" }
+        })
+    },
+    {
+        num: 7,
+        name: "Lassitude",
+        subtitle: "Difficulty starting or sustaining activities",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "No difficulty", desc: "Hardly any difficulty getting started; no sluggishness" },
+            2: { label: "Difficulty starting", desc: "Difficulties in starting activities" },
+            4: { label: "Routine with effort", desc: "Difficulties in starting simple routine activities which are carried out with effort" },
+            6: { label: "Complete lassitude", desc: "Complete lassitude; unable to do anything without help" }
+        })
+    },
+    {
+        num: 8,
+        name: "Inability to Feel",
+        subtitle: "Reduced emotional engagement with surroundings",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "Normal interest", desc: "Normal interest in surroundings and in other people" },
+            2: { label: "Reduced enjoyment", desc: "Reduced ability to enjoy usual interests" },
+            4: { label: "Loss of interest", desc: "Loss of interest in surroundings; loss of feelings for friends and acquaintances" },
+            6: { label: "Emotionally paralysed", desc: "The experience of being emotionally paralysed; inability to feel anger, grief or pleasure; complete or even painful failure to feel for close relatives" }
+        })
+    },
+    {
+        num: 9,
+        name: "Pessimistic Thoughts",
+        subtitle: "Self-reproach, guilt, hopelessness",
+        suicideItem: false,
+        options: buildOptions({
+            0: { label: "No pessimism", desc: "No pessimistic thoughts" },
+            2: { label: "Fluctuating ideas", desc: "Fluctuating ideas of failure, self-reproach or self-depreciation" },
+            4: { label: "Persistent", desc: "Persistent self-accusations or definite but still rational ideas of guilt or sin; increasingly pessimistic about the future" },
+            6: { label: "Delusions", desc: "Delusions of ruin, remorse or unredeemable sin; absurd self-accusations" }
+        })
+    },
+    {
+        num: 10,
+        name: "Suicidal Thoughts",
+        subtitle: "Passive thoughts to active plans",
+        suicideItem: true,
+        options: buildOptions({
+            0: { label: "Enjoys life", desc: "Enjoys life or takes it as it comes" },
+            2: { label: "Weary of life", desc: "Weary of life; only fleeting suicidal thoughts" },
+            4: { label: "Probably better dead", desc: "Probably better off dead; suicidal thoughts are common, and suicide is considered as a possible solution but without specific plans or intention" },
+            6: { label: "Explicit plans", desc: "Explicit plans for suicide when there is an opportunity; active preparations for suicide" }
+        })
+    }
+];
+
+const scores = new Array(10).fill(null);
+
+document.getElementById('assessDate').valueAsDate = new Date();
+
+function buildItems() {
+    const container = document.getElementById('itemsContainer');
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = `
+        <h2>MADRS Items</h2>
+        <div class="section-line"></div>
+        <span class="section-tag">10 items · 0–6 each · Max 60</span>`;
+    container.appendChild(header);
+
+    ITEMS.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `item-card-${idx}`;
+
+        const optionsHtml = item.options.map(opt => `
+            <button class="score-btn${opt.isAnchor ? ' anchor-btn' : ''}" id="btn-${idx}-${opt.score}" onclick="setScore(${idx}, ${opt.score})">
+                <span class="btn-num">${opt.score}</span>
+                <span class="btn-label">${opt.label}</span>
+                <span class="btn-desc">${opt.desc}</span>
+            </button>
+        `).join('');
+
+        const flagNote = item.suicideItem
+            ? `<div style="background:#fff5f5;border:1px solid #fed7d7;border-radius:6px;padding:8px 10px;margin-bottom:12px;font-size:0.78rem;color:#742a2a;font-weight:600;">&#9888; Score &ge;4 on this item triggers a clinical alert in the results.</div>`
+            : '';
+
+        card.innerHTML = `
+            <div class="item-header" onclick="toggleCard(${idx})">
+                <div class="item-num">${item.num}</div>
+                <div class="item-title-block">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-subtitle">${item.subtitle}</div>
+                </div>
+                <div class="item-score-display" id="score-display-${idx}">—</div>
+                <div class="chevron">▼</div>
+            </div>
+            <div class="item-body">
+                ${flagNote}
+                <p class="anchor-note">Anchors at 0, 2, 4, 6 — use 1, 3, 5 for intermediate values.</p>
+                <div class="score-options">${optionsHtml}</div>
+            </div>`;
+
+        container.appendChild(card);
+    });
+}
+
+function toggleCard(idx) {
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.toggle('open');
+}
+
+function setScore(idx, value) {
+    scores[idx] = value;
+
+    ITEMS[idx].options.forEach(opt => {
+        const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+        btn.classList.remove('selected', 'selected-high');
+        if (opt.score === value) {
+            btn.classList.add(value >= 4 ? 'selected-high' : (value > 0 ? 'selected' : 'selected'));
+        }
+    });
+
+    const card = document.getElementById(`item-card-${idx}`);
+    card.classList.remove('scored', 'scored-high');
+    if (value > 0) {
+        card.classList.add(value >= 4 ? 'scored-high' : 'scored');
+    }
+
+    document.getElementById(`score-display-${idx}`).textContent = value;
+    updateTotals();
+}
+
+function getSeverity(total) {
+    if (total <= 6) return { label: 'No/Absent', cls: 'severity-none', range: 'Score 0–6' };
+    if (total <= 19) return { label: 'Mild', cls: 'severity-mild', range: 'Score 7–19' };
+    if (total <= 34) return { label: 'Moderate', cls: 'severity-moderate', range: 'Score 20–34' };
+    return { label: 'Severe', cls: 'severity-severe', range: 'Score 35–60' };
+}
+
+function updateTotals() {
+    const rated = scores.filter(s => s !== null).length;
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+    const item10Score = scores[9]; // Item 10 is index 9
+    const siFlag = item10Score !== null && item10Score >= 4;
+
+    document.getElementById('totalScore').textContent = total;
+
+    const sev = getSeverity(total);
+    const sevBadge = document.getElementById('severityBadge');
+    sevBadge.className = 'severity-badge ' + sev.cls;
+    sevBadge.textContent = sev.label;
+
+    document.getElementById('progressBar').style.width = `${(rated / 10) * 100}%`;
+    document.getElementById('progressText').textContent = `${rated} of 10 rated`;
+
+    document.getElementById('r_total').textContent = total;
+    document.getElementById('r_severity').textContent = sev.label;
+    document.getElementById('r_severity_range').textContent = sev.range;
+
+    const flagBox = document.getElementById('siFlag');
+    flagBox.style.display = siFlag ? 'block' : 'none';
+
+    const summary = document.getElementById('itemSummary');
+    const scoredItems = ITEMS.map((item, idx) => ({ item, score: scores[idx] })).filter(({ score }) => score !== null && score > 0);
+    summary.innerHTML = scoredItems.length
+        ? scoredItems.map(({ item, score }) => `
+            <div class="summary-row">
+                <span class="s-name">${item.num}. ${item.name}</span>
+                <span class="s-score">${score}/6</span>
+            </div>`).join('')
+        : '<div style="font-size:0.8rem;color:#a0aec0;padding:4px 0;">No items scored above 0 yet.</div>';
+}
+
+function resetAll() {
+    if (!confirm('Reset all scores? This cannot be undone.')) return;
+    scores.fill(null);
+    ITEMS.forEach((item, idx) => {
+        const card = document.getElementById(`item-card-${idx}`);
+        card.classList.remove('scored', 'scored-high', 'open');
+        document.getElementById(`score-display-${idx}`).textContent = '—';
+        item.options.forEach(opt => {
+            const btn = document.getElementById(`btn-${idx}-${opt.score}`);
+            if (btn) btn.classList.remove('selected', 'selected-high');
+        });
+    });
+    updateTotals();
+}
+
+function copyResults() {
+    const name = document.getElementById('patientName').value || 'Unknown';
+    const date = document.getElementById('assessDate').value || new Date().toISOString().slice(0, 10);
+    const clinician = document.getElementById('clinician').value || 'Unknown';
+    const total = scores.reduce((a, s) => a + (s ?? 0), 0);
+    const sev = getSeverity(total);
+    const item10Score = scores[9];
+    const siFlag = item10Score !== null && item10Score >= 4;
+
+    const itemLines = ITEMS
+        .map((item, idx) => ({ item, score: scores[idx] }))
+        .filter(({ score }) => score !== null && score > 0)
+        .map(({ item, score }) => `  • ${item.num}. ${item.name}: ${score}/6`)
+        .join('\n');
+
+    const text = `Montgomery-Åsberg Depression Rating Scale (MADRS)
+Patient: ${name} | Date: ${date} | Clinician: ${clinician}
+
+Total Score: ${total}/60
+Severity: ${sev.label} (${sev.range})
+${siFlag ? '\n⚠ Significant suicidal ideation — assess immediately.\n' : ''}
+Scored Items (above 0):
+${itemLines || '  None'}
+
+Note: This is a clinical rating scale and should be interpreted in conjunction with full clinical assessment.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Summary copied to clipboard.');
+    }).catch(() => {
+        prompt('Copy the text below:', text);
+    });
+}
+
+buildItems();
+updateTotals();
+</script>
+</body>
+</html>
